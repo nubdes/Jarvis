@@ -1,0 +1,594 @@
+//=============Valkyrie Quest==============
+//===================== BTS =====================================================
+
+midgard3,199,243,4	script	Valkyrie	811,{	
+mes "Will be available soon!";
+close;	
+
+	
+if(dar_dar >= 1) goto L_taposme;
+if(hen_hen >= 1) goto L_taposna;
+if(hen_hen < 1)
+	mes "[Valkyrie]";
+	mes "Break the seal quest!!";
+	mes "I am the man you talk to if you want to break the seal";
+	mes "and recieve my hard-earned castle drops and famous Dark Icarus Wing";
+	mes "so are you up to it??";
+	next;
+	mes "[Valkyrie]";
+	mes "These are what i need";
+	mes "(^0000FF"+countitem(7018)+"^000000 / 25) x Young Twig";
+	mes "(^0000FF"+countitem(7020)+"^000000 / 25) x Mother's Nightmare";
+	mes "(^0000FF"+countitem(7289)+"^000000 / 25) x Peridot";
+	mes "(^0000FF"+countitem(7292)+"^000000 / 25) x Muscovite";
+	mes "(^0000FF"+countitem(7297)+"^000000 / 25) x Biotite";
+	mes "(^0000FF"+countitem(7211)+"^000000 / 25) x Fragment of Rossata";
+	mes "(^0000FF"+countitem(7291)+"^000000 / 25) x Agate";
+	mes "(^0000FF"+countitem(7035)+"^000000 / 25) x Matchstick";
+	mes "(^0000FF"+countitem(1054)+"^000000 / 500) x Ancient Lips";
+	mes "(^0000FF"+countitem(7442)+"^000000 / 500) x Cursed Seal";
+	mes "(^0000FF"+countitem(7444)+"^000000 / 500) x Treasure Box";
+	mes "(^0000FF"+countitem(8903)+"^000000 / 200) x Credits";
+	mes "(^0000FF"+countitem(969)+"^000000 / 2000) x Gold";
+	mes "and";
+	mes "(^0000FF"+countitem(7179)+"^000000 / 10) x Proof of Donation";
+	next;
+	mes "So are you up to my quest???";
+	menu "Yes!!!.",-, "Nope",L_later;
+		
+		
+	mes "[Valkyrie]";
+	mes "Are the items ready? let me check.";
+	next;
+	if(
+	countitem(7018) < 25 ||
+	countitem(7020) < 25 || 
+	countitem(7289) < 25 || 
+	countitem(7292) < 25 || 
+	countitem(7297) < 25 || 
+	countitem(7211) < 25 || 
+	countitem(7291) < 25 || 
+	countitem(7035) < 25 || 
+	countitem(1054) < 500 || 
+	countitem(7442) < 500 || 
+	countitem(7444) < 500 || 
+	countitem(8903) < 200 || 
+	countitem(969) < 2000 || 
+	countitem(7179) < 10 ) goto L_later2;
+
+	delitem 7018,25; // Young Twig
+	delitem 7020,25; // Mother's Nightmare
+	delitem 7289,25; // Peridot
+	delitem 7292,25; // Muscovite
+	delitem 7297,25; // Biotite
+	delitem 7211,25; // Fragment of Rossata
+	delitem 7291,25; // Agate
+	delitem 7035,25; // Matchstick
+	delitem 1054,500; // Ancient Lips
+	delitem 7442,500; // Cursed Seal
+	delitem 7444,500; // Treasure Box
+	delitem 8903,200; // Credits
+	delitem 969,2000; // Gold
+	delitem 7179,10; // Proof of Donation"
+	
+	mes "[Valkyrie]";
+	mes "So thank you for the help";
+	mes "you have broken the seal.";
+	set hen_hen,1;
+	next;
+	
+	switch (select("Your Welcome")) {
+	
+	case 1: // Castle Drops
+			set .@gamble1,rand(1,500);
+			if ((.@gamble1 > 200) && (.@gamble1 < 205)) {
+				set .@gamble2,rand(1,10);
+				if	  ((.@gamble2 > 0) && (.@gamble2 <  3)) set .@item,7086; // esg
+				else if ((.@gamble2 > 2) && (.@gamble2 <  5)) set .@item,7090; // ripple
+				else if ((.@gamble2 > 4) && (.@gamble2 <  7)) set .@item,7091; // billow
+				else if ((.@gamble2 > 6) && (.@gamble2 <  9)) set .@item,7077; // silver
+				else if ((.@gamble2 > 8) && (.@gamble2 < 11)) set .@item,7078; // wov
+			}
+			else if ((.@gamble1 >   0) && (.@gamble1 < 201)) set .@item,7086; // esg
+			else if ((.@gamble1 > 204) && (.@gamble1 < 301)) set .@item,7090; // ripple
+			else if ((.@gamble1 > 300) && (.@gamble1 < 401)) set .@item,7091; // billow
+			else if ((.@gamble1 > 401) && (.@gamble1 < 481)) set .@item,7077; // silver
+			else if ((.@gamble1 > 480) && (.@gamble1 < 501)) set .@item,7078; // wov
+	break;
+
+	}
+	mes "[Valkyrie]";
+	mes "Ah, you have out done your self!!";
+	mes "Thank you for your help";
+	mes "Now start your journey to find";
+	mes "my nephews who hold the valkyries";
+	getitem .@item,1;
+	announce "Wowowow "+strcharinfo(0)+" has just broken the seal!! and will start the quest of valkyrie","0x33FF66";
+	close2;
+
+OnInit:
+	while( 1 ){
+		npcwalkto rand(193,210),rand(251,244);
+		sleep 5000;
+		npctalk "[Valkyrie]: Only the toughest warrior shall conquer the unbroken seal!";
+		npcwalkto rand(190,210),rand(251,244);
+		sleep 5000;
+		npctalk "[Valkyrie]: Goosh goosh!";
+		npcwalkto rand(191,210),rand(251,244);
+		sleep 5000;
+		npctalk "[Valkyrie]: All Hail Valkyrie!";
+		}
+		end;
+
+L_taposna:
+	mes "[Valkyrie]";
+	mes "Go out and search the fields of payon the fields of geffen and the towns of lighthalzen and comodo for the valkyrie equips";
+next;
+	mes "[Valkyrie]";
+	mes "save the coorinates of each quest";
+	mes "^F70000Universal Valkyrie Armor^000000";
+	mes "pay_fild10 182 157";
+	mes "^F70000Universal Valkyrie Shield^000000";
+	mes "gef_fild07 185 249";
+	mes "^F70000Universal Valkyrie Manteau^000000";
+	mes "comodo 172 229";
+	mes "^F70000Universal Valkyrie Shoes^000000";
+	mes "lighthalzen 189 297";
+	close;
+
+L_taposme:
+mes "[Valkyrie]";	
+mes "You have already done this quest and there is no point in doing it again";		
+close;
+
+L_later:
+mes "[Valkyrie]";
+mes "Well to bad";
+mes "just come back when your ready";
+close;
+
+L_later2:
+mes "[Valkyrie]";
+mes "*piff*";
+mes "You lack some items";
+mes "Come back when your really done";
+close;
+
+		
+}
+
+pay_fild10.gat,182,157,5	script	Russell	4_M_HUMERCHANT,{
+
+if(dar_dar >= 1) goto L_udone;
+if(rus_rus >= 1) goto L_tapospopo;
+if(hen_hen >= 1) goto continueq;	
+if(hen_hen < 1)	
+{
+mes "[ Russell ]";	
+mes "Are you the delivery boy of pizza hut?";	
+mes "If not go way i don't need you";	
+close;	
+}	
+continueq:
+			
+mes "[ Russell ]";	
+mes "Oh my grasya santisimo!!";	
+mes "You have spoken to Valkyrie!";	
+next;
+mes "[ Russell ]";	
+mes "By the way i am Russell of Payon the crafter of the Universal Valkyrie Armor.";
+mes "would you like to have one?";
+menu "Yes",-,"No",L_ayaw;		
+next;	
+
+mes "[ Russell ]";
+mes "This great armor is very complicated, it needs very rare materials to craft it if you really want it go get me these";	
+next;	
+mes "100 Three-Headed Dragon's head";	
+mes "4 Ripple";
+mes "4 Silver Ornament";
+mes "1 Chain Mail[1]";		
+mes "100 Treasure Box";	
+mes "50 Credits";
+next;	
+mes "[ Russell ]";	
+mes "I'll be waiting for you chosen one!";	
+if(countitem(7443) < 100 || countitem(7090) < 4 || countitem(7077) < 4 || countitem(7444) < 100 || countitem(2315) < 1 || countitem(8903) < 50) goto koolang;
+if(countitem(7443) >= 100 || countitem(7090) >= 4 || countitem(7077) >= 4 || countitem(7444) >= 100 || countitem(2315) >= 1 || countitem(8903) >= 50) goto kontinueq;
+close;	
+
+L_ayaw:		
+	
+mes "[ Russell ]";	
+mes "Wacha Wachi Wacho... go shoooo";
+mes "Just speak to me if you want it already";
+close;	
+		
+	
+koolang:	
+next;	
+mes "[ Russell ]";	
+mes "AS I SAID ONE MISSING MATERIAL/REQUIREMENTS AND ALL OTHERS GO TO WASTE!";	
+close;	
+
+kontinueq:	
+next;
+mes "[ Russell ]";	
+mes "Very well done my friend you have finished the Universal Valkyrie Armor quest";		
+delitem 7443,100;	
+delitem 7090,4;	
+delitem 7077,4;
+delitem 7444,100;
+delitem 2315,1;	
+delitem 8903,50;
+next;
+getitem 36001,1;
+set rus_rus,1;
+next;	
+mes "[ Russell ]";	
+mes "Good job sir, enjoy your new armor";		
+mes "Now you should seek my brothers and cousins and finish the quest";
+mes "And when you gain the valkyrie set speak to Daryl";
+mes "By the way my brothers and cousins are scattered";
+mes "around Rune-Midgard and Daryl is in valkyrie";
+announce "Wowowow "+strcharinfo(0)+" has just created the mystical Universal Valkyrie Armor.",8;
+close;	
+
+L_tapospopo:	
+mes "[ Russell ]";	
+mes "As i said complete the valkyrie quest";		
+mes "And then speak to Daryl";	
+close;
+
+L_udone:
+mes "[ Russell ]";	
+mes "This quest, once done no more repeating";		
+close;
+}	
+	
+gef_fild07.gat,185,249,5	script	Jhames	4_M_HUMAN_02,{
+
+if(dar_dar >=1) goto L_bulmadone;
+
+if(jmz_bit >=1) goto L_bulmatapos;
+
+if(hen_hen >=1) goto B_ulma;	
+if(hen_hen < 1)
+{
+mes "[ Jhames ]";	
+mes "I am sight seeing don't disturb me";	
+mes "go far far away from me!!";
+close;
+}	
+B_ulma:	
+
+mes "[ Jhames ]";	
+mes "Oh, you know Valkyrie";	
+mes "Nice to meet you i'm jhames";	
+mes "I craft the Universal Valkyrie Shield";
+mes "Would you like me to craft the said shield?";
+menu "Okay",-,"Nope",M_ofo;	
+next;	
+	
+mes "[ Jhames ]";	
+mes "The Universal Valkyrie Shield is a very difficult item to craft the materials are rare. Well if your sure you want to make it";
+mes "these are the items i need.";	
+next;
+mes "50 Fire Dragon Scale";	
+mes "4 Wrath of Valkyrie";	
+mes "4 Snow Crystal";
+mes "1 Buckler[1]";
+mes "100 Treasure Box";
+mes "50 Credits";
+next;	
+if(bulma >= 1 || countitem(7451) < 50 || countitem(7078) < 4 || countitem(7088) < 4 || countitem(2104) < 1 || countitem(7444) < 100 || countitem(8903) < 50) goto K_ulangot;	
+if(bulma >= 1 || countitem(7451) >= 50 || countitem(7078) >= 4 || countitem(7088) >= 4 || countitem(2104) >= 1 || countitem(7444) >= 100 || countitem(8903) >= 50) goto K_umpleto;
+close;
+	
+M_ofo:	
+	
+mes "[ Jhames ]";	
+mes "Okay, Talk to me later.";
+close;
+
+K_ulangot:	
+	
+mes "[ Jhames ]";	
+mes "You don't have the items";	
+close;	
+	
+K_umpleto:	
+	
+mes "[ Jhames ]";	
+mes "Wow, thanks!";	
+delitem 7451,50;	
+delitem 7078,4;
+delitem 7088,4;
+delitem 2104,1;
+delitem 7444,100;
+delitem 8903,50;
+getitem 36004,1;
+next;
+mes "[ Jhames ]";	
+mes "Nicely done enjoy the shield";		
+mes "Continue searching for my friends";
+mes "And when you gain the valkyrie set speak to Daryl";
+mes "Again my brothers and cousins are scattered";
+mes "Around Rune-Midgard and Daryl is in valkyrie";
+announce "Wowowow "+strcharinfo(0)+" has just created the mystical Universal Valkyrie Shield.",8;
+set jmz_bit,1;		
+close;		
+
+	
+L_bulmatapos:	
+mes "[ Jhames ]";
+mes "Complete the valkyrie quest and speak to Daryl";	
+close;	
+
+L_bulmadone:
+mes "[ Jhames ]";
+mes "Dude, you can only do this quest once";	
+close;		
+}	
+	
+lighthalzen.gat,189,297,5	script	Anthonie	4_M_KHMAN,{	
+	
+if(dar_dar >=1) goto L_chichix;
+if(tonton >=1) goto L_chichi;
+if(hen_hen >= 1) goto tsitsi;	
+if(hen_hen < 1)	
+{
+mes "[ Anthonie ]";	
+mes "I miss Donna";	
+mes "I wish i could see her again";
+close;	
+	}
+tsitsi: 	
+
+mes "[ Anthonie ]";	
+mes "You have spoken to Valkyrie";	
+mes "I am Anthonie the crafter of the Universal Valkyrie Shoes";	
+mes "Would you like me to craft you the shoes?";
+next;	
+menu "Sure",-,"Maybe Later",L_basho;	
+next;	
+	
+		
+	
+mes "[ Anthonie ]";	
+mes "The shoe is quite brittle";
+mes "So it need some hard to find items to make";
+mes "Here are the requirements";	
+next;	
+mes "20 Bone Armor Piece";	
+mes "4 Spirit of Fish";
+mes "4 Drift of Air";	
+mes "1 Boots[1]";	
+mes "100 Treasure Box";	
+mes "50 Credits";	
+next;	
+if(countitem(7450) < 20 || countitem(7083) < 4 || countitem(7092) < 4 || countitem(7444) < 100 || countitem(2406) < 1 || countitem(8903) < 50) goto M_wala;
+if(countitem(7450) >= 20 || countitem(7083) >= 4 || countitem(7092) >= 4 || countitem(7444) >= 100 || countitem(2406) >= 1 || countitem(8903) >= 50) goto M_eron;	
+mes "[ Anthonie ]";	
+mes "Hurry up i have something to do";	
+close;	
+L_basho:	
+	
+mes "[ Anthonie ]";	
+mes "Talk to me when you want it already.";		
+close;
+	
+M_wala:
+	
+mes "[ Anthonie ]";	
+mes "You lack some few items.";	
+close;	
+	
+M_eron:	
+	
+mes "[ Anthonie ]";	
+mes "Oh thank you!";	
+delitem 7450,20;	
+delitem 7083,4;
+delitem 7092,4;	
+delitem 2406,1;	
+delitem 7444,100;
+delitem 8903,50;
+getitem 36002,1;
+set tonton,1;	
+next;	
+mes "[ Anthonie ]";	
+mes "Good one dude Enjoy the shoes";		
+mes "continue the holy valkyrie quest";
+mes "and when you gain the valkyrie set speak to Daryl";
+mes "my brothers and cousins are scattered around Rune-Midgard and Daryl is at the valkyrie hall";
+announce "Wowowow "+strcharinfo(0)+" has just created the mystical Universal Valkyrie Shoes.",8;	
+close;	
+	
+L_chichi:	
+mes "[ Anthonie ]";	
+mes "Search my cousins and after that";
+mes "Find Daryl!";	
+close;	
+	
+L_chichix:	
+mes "[ Anthonie ]";	
+mes "Nice to meet you again brave warrior, how is life treating you with your new (GODLY!) equips!";	
+close;	
+}	
+	
+comodo.gat,172,229,5	script	Christian	4_M_JOB_BLACKSMITH,{
+		
+if(dar_dar >=1) goto L_puten;
+if(tan_tan >=1) goto L_buten;
+if(hen_hen >=1) goto M_buten;
+if(hen_hen < 1)	
+{	
+mes "[ Christian ]";	
+mes "Hi.... Now fly you noob";	
+close;	
+	}
+	
+M_buten:	
+	
+
+mes "[ Christian ]";	
+mes "You know Valkyrie?? wow this is great!!";	
+mes "I can make the Universal Valkyrie Manteau!";	
+mes "Do you want one??";	
+menu "Yeye",-,"No thanks",karpenter;	
+	
+
+next;		
+mes "[ Christian ]";	
+mes "Okay if you want it bring me these";		
+next;	
+mes "50 Matchstick";	
+mes "4 Omen of Tempest";
+mes "4 Emblem of Sun God";
+mes "1 Manteau[1]";	
+mes "100 Treasure Box";	
+mes "50 Credits";
+next;	
+mes "[ Christian ]";
+mes "I'll be waiting for you";
+if (countitem(7035) < 50 || countitem(7086) < 4 || countitem(7089) < 4 || countitem(2506) < 1 || countitem(7444) < 100 || countitem(8903) < 50) goto Kewlung;	
+if (countitem(7035) >= 50 || countitem(7086) >= 4 || countitem(7089) >= 4 || countitem(2506) >= 1 || countitem(7444) >= 100 || countitem(8903) >= 50) goto Kempleto;	
+close;
+		
+karpenter:	
+next;
+mes "[ Christian ]";	
+mes "Huhuhuhu T_T cry cry.. you wasted my time";	
+close;		
+
+Kewlung:	
+next;	
+mes "[ Christian ]";
+mes "Incomplete items noob!";	
+close;	
+	
+Kempleto:	
+next;	
+mes "[ Christian ]";	
+mes "You are trustworthy!!";	
+delitem 7444,100;	
+delitem 2506,1;
+delitem 7086,4;
+delitem 7089,4;	
+delitem 7035,50;
+delitem 8903,50;
+getitem 36003,1;
+set tan_tan,1;		
+next;	
+mes "[ Christian ]";			
+mes "Rawr, take the robe then continue the valkyrie quest,";		
+mes "and when you gain the valkyrie set speak to Daryl.";
+mes "my brothers and cousins are scattered around Rune-Midgard and Daryl is in the valkyrie hall";
+announce "Wowowow "+strcharinfo(0)+" has just created the mystical Universal Valkyrie Manteau.",8;		
+close;	
+		
+L_buten:		
+mes "[ Christian ]";		
+mes "Finish Valkyrie quest and speak to Daryl at the valkyrie";	
+close;
+
+L_puten:		
+mes "[ Christian ]";		
+mes "Wow, your one of the Mega-Warrior. How is life treating you my friend?";	
+close;
+}
+
+/*
+valkyrie.gat,49,49,5	script	Daryl	4_M_JOB_KNIGHT1,{
+
+mes "[ Daryl ]";
+mes "Hello there my friend i am Daryl";
+next;
+if(dar_dar >= 1) goto L_kalbo;
+if(countitem(2524) < 1 || countitem(2421) < 1 || countitem(2357) < 1 || countitem(2115) < 1) goto daryl;
+
+mes "[ Daryl ]";
+mes "Good you have the valkyrie set if you must know i am the crafter of the Sleipnir";
+next;
+
+if(tan_tan >= 1) goto darylquest;
+if(tan_tan < 1) goto daryl;	
+
+darylquest:
+mes "[ Daryl ]";	
+mes "I see you really have spoken to my brothers.";	
+mes "Very well then!";	
+next;
+mes "[ Daryl ]";	
+mes "By the way i am Daryl of the valkyries and you already know what i make,";
+mes "Do you desire the Sleipnir?";
+menu "Yes",-,"No",L_nono;		
+next;	
+mes "[ Daryl ]";
+mes "The great sleipnir named after Odin's trusty";
+mes "steed, is the most powerful shoe in the land";
+mes "Gather these things so i may craft it";		
+next;	
+		
+mes "30 Fragment of Rossata Stone";	
+mes "100 Treasure Box";	
+mes "1,000 Credits";	
+	
+next;	
+mes "[ Daryl ]";	
+mes "I'll be waiting for you chosen one!";	
+if (countitem(7211) < 30 || countitem(7444) < 100 || countitem(8903) < 1000) goto kikiki;	
+if (countitem(7211) >= 30 || countitem(7444) >= 100 || countitem(8903) >= 1000) goto killhim;	
+
+close;	
+
+L_nono:		
+	
+mes "[ Daryl ]";	
+mes "Go away if you don't want it";
+mes "Just speak to me if you want it already";
+close;	
+		
+	
+kikiki:	
+next;	
+mes "[ Daryl ]";	
+mes "Incomplete requirements!";	
+close;	
+
+killhim:	
+next;
+mes "[ Daryl ]";	
+mes "Very well done my friend";	
+mes "You are very good!!";		
+delitem 7211,30;
+delitem 7444,100;
+delitem 8903,1000;	
+getitem2 2410,1,1,@ref,0,254,0,getcharid(0)&0xffff,(getcharid(0)>>16)&0xffff;
+set dar_dar,1;
+next;	
+mes "[ Daryl ]";	
+mes "Success!!!! Enjoy the sleipnir";		
+mes "You are now a Mega-Warrior of United Ragnarok Online";
+mes "Go free now you noble man";
+announce "ROFLMAO "+strcharinfo(0)+" has just become the Mega-Warrior and gained Sleipnir.",8;
+close;	
+	
+L_kalbo:	
+mes "[ Daryl ]";	
+mes "You have already gained sleipnir";		
+mes "How dare you speak to me again now i order you to go back to prontera!";
+next;
+percentheal -100,0;	
+warp "phtownall",0,0;	
+close;
+
+daryl:
+mes "[ Daryl ]";	
+mes "Oh, your just another newbie";	
+mes "Go fly away";	
+close;
+
+}
+*/

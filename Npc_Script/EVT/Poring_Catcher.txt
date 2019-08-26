@@ -1,0 +1,198 @@
+//= Poring Catcher - Auto Event Script
+//===== By: ================================================================================
+//= Washi - www.EarthBound-RO.com
+//===== Compatible With: ====================================================================
+//= Any eAthena Version
+//===== Description: ========================================================================
+//= Single NPC that starts automatically starts every hour.
+//===== Additional Comments: ================================================================
+//= This script is a combenation of the Dice Event by [Mahina]
+//= and the origonal Poring Catcher Event by [Wild Karrd]
+//===========================================================================================
+//= OnMinute - Change this to the minute you would like this script to load. [ LINE 22 ]
+//= getitem - Change this to the Item ID of your prize. [ LINE 118 ]
+//===========================================================================================
+-	script	poring#announcer	-1,{
+OnInit:
+	disablenpc "poringevent";
+	hideonnpc "Poring Catcher#evnt2";
+	end;
+
+OnWhisperGlobal:
+OnMinute30:
+if(agitcheck()||agitcheck2()) end;
+	goto OnStart;
+	end;
+
+OnStart:
+	announce "Poring Catcher : It's time to play some Poring Catcher!",bc_all,0x64E986;
+	killmonster "poring_w01","All";
+	sleep 10000;
+	announce "Poring Catcher : Please make your way to @warp midgard3 232 200!",bc_all,0x64E986;
+	sleep 10000;
+	announce "Poring Catcher : After one minute the portal will close.",bc_all,0x64E986;
+	sleep 10000;
+	announce "Poring Catcher : Enter the warp portal now if you want to join. @warp midgard3 232 200",bc_all,0x64E986;
+	enablenpc "poringevent";
+	initnpctimer;
+	end;
+
+OnTimer30000:
+	announce "Poring Catcher : Last 30 seconds.",bc_all,0x64E986;
+	sleep 5000;
+	announce "Poring Catcher : Hurry to the center of midgard! if you want to join.",bc_all,0x64E986;
+	end;
+	
+OnTimer50000:
+	announce "Poring Catcher : Last 10 seconds.",bc_all,0x64E986;
+	end;
+	
+OnTimer55000:
+	announce "Poring Catcher : 5.",bc_all,0x64E986;
+	end;
+	
+OnTimer56000:
+	announce "Poring Catcher : 4.",bc_all,0x64E986;
+	end;
+	
+OnTimer57000:
+	announce "Poring Catcher : 3.",bc_all,0x64E986;
+	end;
+	
+OnTimer58000:
+	announce "Poring Catcher : 2.",bc_all,0x64E986;
+	end;
+	
+OnTimer59000:
+	announce "Poring Catcher : 1.",bc_all,0x64E986;
+	end;
+	
+OnTimer60000:
+	announce "Poring Catcher : Time's up. Portal Will Open again after 1hour.",bc_all,0x64E986;
+	end;
+	
+OnTimer61000:
+	disablenpc "poringevent";
+	donpcevent "Poring Catcher#evnt2::OnEnable";
+	stopnpctimer;
+	end;
+	}
+
+//--------------------------------------------------
+midgard3,232,200,4	warp	poringevent	2,2,poring_w01,106,129
+//phtownall,231,151,4	warp	poringevent	2,2,poring_w01,106,129
+
+	
+//--------------------------------------------------
+
+poring_w01,100,127,4	script	Poring Catcher#evnt2	4_M_PIERROT,{
+
+//--------------------------------------------------
+	
+	mes "[Poring Catcher]";
+	if(PORING == 1) goto L_PORING;
+	mes "Please tell me your name";
+	next;
+	input .@name$;
+	if(.@name$ != strcharinfo(0)) {
+		mes "[Poring Catcher]";
+		mes "Are you sure thats your character name?";
+		close;
+	}
+	mes "[Poring Catcher]";
+	mes "Congrats. You've won.";
+	close2;
+	announce "Poring Catcher : All laugh at, "+.@name$+". - This player tried to cheat the system. Muhahahahaha!",bc_all,0x64E986;
+	warp "midgard3",200,176;
+	end;
+
+L_PORING:
+	mes "Please tell me your name";
+	next;
+	input .@name$;
+	if(.@name$ != strcharinfo(0)) {
+		mes "[Poring Catcher]";
+		mes "Are you sure thats your character name?";
+		close;
+	}
+	mes "[Poring Catcher]";
+	mes "Congrats. You've won.";
+	close2;
+	announce "Poring Catcher : We have a winner, Congratulations "+.@name$+" !",bc_all,0x64E986;
+	getitem 8900,5;
+	warp "midgard3",200,176;
+	hideonnpc "Poring Catcher#evnt2";
+	end;
+	
+OnEnable:
+	mapannounce "poring_w01","Poring Catcher : I will be summoning 100 different Porings.",0,0x64E986;
+	sleep 10000;
+	mapannounce "poring_w01","Poring Catcher : Only one of these Porings is the correct Poring.",0,0x64E986;
+	sleep 10000;
+	mapannounce "poring_w01","Poring Catcher : The correct Poring is called [ Poring ], all the other Porings have different names.",0,0x64E986;
+	sleep 10000;
+	mapannounce "poring_w01","Poring Catcher : Take your time because if you kill the wrong Poring, your out of the game.",0,0x64E986;
+	sleep 10000;
+	mapannounce "poring_w01","Poring Catcher : The first player to kill the correct Poring wins.",0,0x64E986;
+	sleep 10000;
+	mapannounce "poring_w01","Poring Catcher : That's that.. Now let's play...",0,0x64E986;
+	goto L_Start;
+	end;
+	
+L_Start:
+	mapannounce "poring_w01","Poring Catcher : 5",0,0x64E986;
+	sleep 1000;
+	mapannounce "poring_w01","Poring Catcher : 4",0,0x64E986;
+	sleep 1000;
+	mapannounce "poring_w01","Poring Catcher : 3",0,0x64E986;
+	sleep 1000;
+	mapannounce "poring_w01","Poring Catcher : 2",0,0x64E986;
+	sleep 1000;
+	mapannounce "poring_w01","Poring Catcher : 1",0,0x64E986;
+	sleep 1000;
+	mapannounce "poring_w01","Poring Catcher : Lets Do This!",0,0x64E986;
+	areamonster "poring_w01",84,119,121,90,"Poring",1002,1,"poringwin::OnMobKilled";
+	areamonster "poring_w01",84,119,121,90,"Pouring",1002,10,"poringlose::OnMobKilled";
+	areamonster "poring_w01",84,119,121,90,"Proing",1002,10,"poringlose::OnMobKilled";
+	areamonster "poring_w01",84,119,121,90,"Poiring",1002,10,"poringlose::OnMobKilled";
+	areamonster "poring_w01",84,119,121,90,"Poing",1002,10,"poringlose::OnMobKilled";
+	areamonster "poring_w01",84,119,121,90,"I am not Poring",1002,5,"poringlose::OnMobKilled";
+	areamonster "poring_w01",84,119,121,90,"PoriNg",1002,10,"poringlose::OnMobKilled";
+	areamonster "poring_w01",84,119,121,90,"Porong",1002,10,"poringlose::OnMobKilled";
+	areamonster "poring_w01",84,119,121,90,"P0ring",1002,10,"poringlose::OnMobKilled";
+	areamonster "poring_w01",84,119,121,90,"Por1ng",1002,10,"poringlose::OnMobKilled";
+	areamonster "poring_w01",84,119,121,90,"Porng",1002,1,"poringlose::OnMobKilled";
+	end;
+}
+
+-	script	poringwin	-1,{
+
+OnMobKilled:
+	dispbottom "Poring : Congratulations. You've got me.";
+	set PORING,1;
+	atcommand "@doommap";
+	killmonster "poring_w01","All";
+	mapannounce "poring_w01","Poring Catcher : Come to me and tell me your name.",0,0x64E986;
+	hideoffnpc "Poring Catcher#evnt2";
+	end;
+
+}
+
+-	script	poringlose	-1,{
+
+OnMobKilled:
+	dispbottom "Poring Catcher : Wahaha, your a loser! - I wasnt the correct Poring.";
+	warp "midgard3",200,176;
+	end;
+}
+
+
+poring_w01	mapflag	pvp	off
+poring_w01	mapflag	nowarpto
+poring_w01	mapflag	nowarp
+poring_w01	mapflag	nocommand	1
+poring_w01	mapflag	noskill
+poring_w01	mapflag	nobranch
+poring_w01	mapflag	novending
+poring_w01	mapflag	nomobloot
+poring_w01	mapflag	nodrop

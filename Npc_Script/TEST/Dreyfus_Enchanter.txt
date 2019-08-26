@@ -1,0 +1,134 @@
+midgard3,165,208,6	script	Dreyfus Enshantier	826,{
+	.@enc$ = "[ Dreyfus Enshantier ]";
+	.@reqid = 8905;
+	.@reqidamt = 5;
+	.@id = getequipid( EQI_HEAD_TOP );
+	.@ref = getequiprefinerycnt( EQI_HEAD_TOP );
+	.@card1 = getequipcardid( EQI_HEAD_TOP, 0 );
+	.@card2 = getequipcardid( EQI_HEAD_TOP, 1 );
+	.@card3 = getequipcardid( EQI_HEAD_TOP, 2 );
+	.@card4 = getequipcardid( EQI_HEAD_TOP, 3 );
+
+	mes .@enc$;
+	mes "I've been studying ways to enhance an headgear to maximize its capability.";
+	next;
+	mes .@enc$;
+	mes "Enchanting is an awesome skill that infuses a mysterious status powers into the armor's hidden socket.";
+	next;
+	mes .@enc$;
+	mes "Btw, enchanting is not 100% always success.";
+	next;
+	mes .@enc$;
+	mes "The probability rate of succeding is kind of low.";
+	mes "+1 Stat = 20%";
+	mes "+2 Stat = 10%";
+	mes "+3 Stat = 1%";
+	mes "and there's 50% chance of getting nothing at all.";
+	next;
+	mes .@enc$;
+	mes "Enchanting will cost you ^0000FF"+.@reqidamt+"pcs of "+getitemname(.@reqid)+"^000000.";
+	mes " ";
+	mes "Do you still want to try an Enchant?";
+	if ( select ( "Let me think again...", "Go ahead!" ) == 1 ) {
+		next;
+		mes "[Apprentice Craftsman]";
+		mes "Well, I can't blame you. Safety first, eh?";
+		mes "Now you have a nice day.";
+		close;
+		}
+	if (countitem(.@id) > 1) {
+		next;
+		mes .@enc$;
+		mes "It would be better if you only have one kind of headgear that you want to enchant.";
+		close;
+	}
+	if ( !getequipisequiped( EQI_HEAD_TOP ) ) {
+		next;
+		mes .@enc$;
+		mes "You dont have any Costume Upper Headgear that is being equipped.";
+		close;
+	}
+	if ( .@card1 == 255 || .@card1 == 254 ) {
+		next;
+		mes .@enc$;
+		mes "I can't enchant a signed equipment.";
+		close;
+	}
+	next;
+	mes .@enc$;
+	mes "Quite of an adventurer huh? Well, shall we?";
+	if (select("Yes!:No! wait...")==2) close;
+	next;
+	// Disabled for enchanted check.
+	//if ( !.@card4 )
+	//	.@enchant = 0;
+	//else {
+	//	mes "Sorry, this has already been enchanted.";
+	//	close;
+	//}
+	if ( countitem(.@reqid) < .@reqidamt ) {
+		mes .@enc$;
+		mes "You need the following:";
+		mes " ";
+		mes "Item: "+getitemname(.@reqid)+"";
+		mes "Amount: "+.@reqidamt+"";
+		mes " ";
+		mes "to enchant this "+getitemname(.@id)+".";
+		close;
+	}
+	//mes .@enc$;
+	//mes "NOTE: DO NOT! move from your current positon neither clicking your mouse elsewhere or your item's will vanished!";
+	specialeffect2 EF_MAPPILLAR;
+	progressbar "green",2;
+	.@rand = rand(1,100);
+	if ( .@rand == 1 ) {
+		.@o = rand(0,5); // orb of str/int/dex ...
+		.@r = 2;
+		delitem .@reqid,.@reqidamt;
+		delitem2 .@id, 1,1, .@ref, 0, .@card1, .@card2, .@card3, .@card4;
+		getitem2 .@id, 1,1, .@ref, 0, .@card1, .@card2, .@card3, 4700 + .@o * 10 + .@r;
+		equip .@id;
+		.@showresult = 4700 + .@i * 10 + .@r;
+		mes .@enc$;
+		mes "There you go! The enchant is successful!";
+		goto L_Announce;
+		close;
+	} else if ( .@rand >= 2 && .@rand <= 10 ) {
+		.@o = rand(0,5); // orb of str/int/dex ...
+		.@r = 1;
+		delitem .@reqid,.@reqidamt;
+		delitem2 .@id, 1,1, .@ref, 0, .@card1, .@card2, .@card3, .@card4;
+		getitem2 .@id, 1,1, .@ref, 0, .@card1, .@card2, .@card3, 4700 + .@o * 10 + .@r;
+		equip .@id;
+		.@showresult = 4700 + .@i * 10 + .@r;
+		mes .@enc$;
+		mes "There you go! The enchant is successful!";
+		goto L_Announce;
+		close;
+	} else if (.@rand >= 11 && .@rand <= 20 ) {
+		.@o = rand(0,5); // orb of str/int/dex ...
+		.@r = 0;
+		delitem .@reqid,.@reqidamt;
+		delitem2 .@id, 1,1, .@ref, 0, .@card1, .@card2, .@card3, .@card4;
+		getitem2 .@id, 1,1, .@ref, 0, .@card1, .@card2, .@card3, 4700 + .@o * 10 + .@r;
+		equip .@id;
+		mes .@enc$;
+		mes "There you go! The enchant is successful!";
+		goto L_Announce;
+		close;
+	} else {
+		delitem .@reqid,.@reqidamt;
+		delitem2 .@id, 1,1, .@ref, 0, .@card1, .@card2, .@card3, .@card4;
+		getitem2 .@id,1,1, .@ref, 0, .@card1, .@card2, .@card3, .@card4;
+		equip .@id;
+		mes .@enc$;
+		mes "WAHHHH!!! I'm so sorry... I warned you this could happen...";
+		close;
+	}
+	end;
+
+L_Announce:
+	.@anid = getequipcardid( EQI_HEAD_TOP, 3 );
+	announce strcharinfo(0)+" has succesfully enchanted the "+getitemname(.@id)+" with "+getitemname(.@anid)+"",0;
+	end;
+}

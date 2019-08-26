@@ -1,0 +1,17 @@
+function	script	GetCastleDrops	{
+	getitem F_Rand(7073,7074,7075,7076,7077,7078,7079,7080,7081,7082,7083,7084,7085,7086,7087,7088,7089,7090,7091,7092), 1;
+	getitem F_Rand(7073,7074,7075,7076,7077,7078,7079,7080,7081,7082,7083,7084,7085,7086,7087,7088,7089,7090,7091,7092), 1;
+	getitem F_Rand(7073,7074,7075,7076,7077,7078,7079,7080,7081,7082,7083,7084,7085,7086,7087,7088,7089,7090,7091,7092), 1;
+	end;
+}
+
+function	script	GetConquerorReward	{
+	getitem 8919,3;
+	getitem 8903,100;
+	getitem 8900,30;
+	getitem 8929,90;
+	getitem 8924,90;
+	getitem 8921,30;
+	getitem 8923,30;
+	dispbottom "Congratulations "+strcharinfo(0)+" for winning a castle!";
+}

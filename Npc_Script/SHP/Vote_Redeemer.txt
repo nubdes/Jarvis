@@ -1,0 +1,136 @@
+//==========================================================================
+// _   __  __           _                   	_
+// |    \ \/ /__ _ _ __ | |_  __ _ _ __ __ _ 	 |
+// |     \  // _` | '_ \| __|/ _` | '__/ _` |	 |
+// |     /  \ (_| | | | | |_| (_| | | | (_| |	 |
+// |_   /_/\_\__,_|_| |_|\__|\__,_|_|  \__,_|	_| http://artistic-coder.com
+//===== Script =============================================================
+//= V4P Redeemer - FluxCP V4P Add-On
+//===== By: ================================================================
+//= Xantara, Matthew Harris and Nikunj Mehta
+//===== Compatible With: ===================================================
+//= rAthena SVN
+//===== Additional Comments: ===============================================
+//= 1.0 Initial Release
+//= 2.0 Updated to work with V4P Add-on v2.0
+//==========================================================================
+
+prt_in,171,140,5	script	V4P Redeemer	55,{
+// == CONFIG =======================================================================================
+// -------------------------------------------------------------------------------------------------
+// [Reward Type] Type of reward to be redeemed
+//  Types: 1 = FluxCP Donation Credits, 2 = Item (eg. Coins), 3 = Variable (eg. Cash Points)
+	set .@rewardType, 3;
+// -------------------------------------------------------------------------------------------------
+// [Reward Ratio] Vpoints per reward amount: [Default: 1]
+//  Example: If set to 2, then it takes 2 vpoints for 1 reward amount. (2 vote banners for 1 coin)
+	set .@rewardRatio, 1;
+// -------------------------------------------------------------------------------------------------
+// [Reward Name] Name for the reward given:
+//  Example: Donation Tokens (for credits), Coins (for item), or iPoints (for variable)
+	set .@rewardName$, "rewards";
+// -------------------------------------------------------------------------------------------------
+// [Item Reward] (rewardType == 2) Item id of the reward:
+	set .@rewardItem, 6242;
+// -------------------------------------------------------------------------------------------------
+// [Variable Reward] (rewardType == 3) Variable name of the reward:
+//  Note: Recommended to use an account-wide variable
+	set .@rewardVar$, "#VOTEPOINTS";
+// -------------------------------------------------------------------------------------------------
+// [Database] Table name for the database that holds the vpoints information:
+//  Note: Leave it as is unless you know what you are doing!
+	set .voteTable$,"cp_vpoints";
+// -------------------------------------------------------------------------------------------------
+// [Database] Table name for the database that holds the vote logs:
+//  Note: Leave it as is unless you know what you are doing!
+	set .logTable$,"cp_votelog";
+// -------------------------------------------------------------------------------------------------
+// [Database] Table name for the credits table
+//  Note: Leave it as is unless you know what you are doing!
+	set .creditsTable$,"cp_credits";
+// -------------------------------------------------------------------------------------------------
+// =================================================================================================
+	function	updateSQL;
+
+	mes "[V4P Redeemer]";
+	mes "Well hello there "+ (Sex ? "good sir." : "young madam!");
+	mes "How may I be of assistance to you on this fine day?";
+	next;
+	switch(select("I wish to redeem:Who might you be?:I am merely perusing the area")) {
+		case 1:
+			mes "[V4P Redeemer]";
+			query_sql "SELECT `account_id`, `amount`, `redeemed` FROM `"+ escape_sql(.voteTable$) +"` WHERE `account_id` = '"+ getcharid(3) +"'",.@id,.@amt,.@r;
+			if (.@id) {
+				set .@totalPoints, .@amt - .@r;
+				set .@redeem, .@totalPoints / .@rewardRatio;
+				mes "How many rewards would you like to redeem?";
+				mes "Pending: "+ .@totalPoints +" vPoints for "+ .@redeem +" "+ .@rewardName$;
+				next;
+				input .@a;
+				if(.@a == 0)
+					break;
+				set .@points, .@a * .@rewardRatio;
+				mes "[V4P Redeemer]";
+				if(.@a <= .@redeem && .@points <= .@totalPoints) {
+					set .@error, 0;
+					switch(.@rewardType)
+					{
+						// FluxCP Donation Credits
+						case 1:
+							query_sql "SELECT `account_id` FROM `"+ escape_sql(.creditsTable$) +"` WHERE `account_id` = '"+ getcharid(3) +"'",.@exists;
+							if(.@exists)
+								query_sql "UPDATE `"+ escape_sql(.creditsTable$) +"` SET `balance` = `balance` + '"+ .@a +"' WHERE `account_id` = '"+ getcharid(3) +"'",.@exists;
+							else
+								query_sql "INSERT INTO `"+ escape_sql(.creditsTable$) +"` (`account_id`, `balance`) VALUES ('"+ getcharid(3) +"', '"+ .@a +"')";
+							updateSQL(getcharid(3),"D",.@points);
+							break;
+						// Item Reward
+						case 2:
+							if (checkweight(.@rewardItem,.@a) != 0) {
+								updateSQL(getcharid(3),"I",.@points);
+								getitem .@rewardItem,.@a;
+							}
+							else {
+								set .@error, 1;
+								mes "I'm terribly sorry, but you are carrying too much to accept your rewards at this time.";
+								mes "Please come back with fewer items.";
+							}
+							break;
+						// Variable Reward
+						case 3:
+							setd .@rewardVar$, getd(.@rewardVar$) + .@a;
+							updateSQL(getcharid(3),"V",.@points);
+							dispbottom "You got "+.@points+" Vote Point(s), Total - "+#VOTEPOINTS+".";
+							break;
+					}
+					if(!.@error) {
+						mes "Thank you for your patronage "+ (Sex ? "fine sir." : "ma'am.");
+						mes "Please enjoy your stay!";
+					}
+				}
+				else
+					mes "Sorry, but you don't have that many to redeem.";
+			}
+			else {
+				mes "My records indicate that there are no rewards awaiting to be redeemed.";
+				mes "My deepest apologies for the misunderstanding.";
+			}
+			break;
+		case 2:
+			mes "[V4P Redeemer]";
+			mes "If you haven't done so already, you may vote for the server through the Control Panel!";
+			mes "You can redeem your voting rewards here afterwards.";
+			break;
+		case 3:
+			mes "[V4P Redeemer]";
+			mes "Very well then.";
+			mes "Good day to you.";
+			break;
+	}
+	close;
+	
+	function	updateSQL	{
+		query_sql "UPDATE `"+ escape_sql(.voteTable$) +"` SET `redeemed` = `redeemed` + '"+ getarg(2) +"' WHERE `account_id` = '"+ getarg(0) +"'";
+		query_sql "INSERT INTO `"+ escape_sql(.logTable$) +"` (`account_id`,`type`,`amount`,`time`) VALUES ('"+ getarg(0) +"', '"+ getarg(1) +"', '"+ getarg(2) +"', NOW())";
+	}
+}

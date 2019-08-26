@@ -1,0 +1,122 @@
+//originated by hardcodesvn@gmail.com | mark_dela_rea@yahoo.com
+//currency used: arena star badge (3606)custom item
+//please dont steal our work and claim it yours.
+
+midgard3,170,187,4	script	Monster Arena	648,{
+strt:
+	mes "[^880000Arena Master^000000]";
+	mes "Good day ^008800"+strcharinfo(0)+"^000000 ";
+	mes "How may i help you?";
+	mes " ";
+	mes " ";
+	mes " ";
+	mes " ";
+switch(select("^000088Enter Arena^000000:Information")){
+//==========================arena room=======================
+	case 1:
+	next;
+	mes "[^880000Arena Master^000000]";
+	mes "Choose Arena Process";
+	next;
+	menu "1 Time ticket",-,"Lifetime ticket",L_ticket;
+	mes "[^880000Arena Master^000000]";
+	mes "Processing ticket...";
+	next;
+	if(countitem(7711) < 1) goto L_Later;
+	mes "[^880000Arena Master^000000]";
+	mes "1 Time ticket accepted";
+	mes "Lets go!..";
+	delitem 7711,1;
+	announce "[Monster Arena] "+strcharinfo(0)+" has entered using 1 time ticket.",0,0xFF6600;
+	warp "bra_dun02" ,0,0;
+	close;
+
+L_ticket:
+	mes "[^880000Arena Master^000000]";
+	mes "Processing ticket...";
+	next;
+	if(countitem(7712) < 1) goto L_Later;
+	mes "[^880000Arena Master^000000]";
+	mes "Lifetime ticket accepted";
+	mes "Lets go!..";
+	announce "[Monster Arena] "+strcharinfo(0)+" has entered using Lifetime ticket.",0,0xFF6600;
+	warp "bra_dun02" ,0,0;
+	next;
+	goto strt;
+
+
+L_Later:
+	mes "[^880000Arena Master^000000]";
+	mes "Dont waste my time!..";
+	next;
+	goto strt;
+
+//==========================================information==============================================
+
+case 2:
+	next;
+	mes "[^880000Arena Master^000000]";
+	mes "You can purchase arena ticket in Hourly Shop.";
+	next;
+	mes "[^880000Arena Master^000000]";
+	mes "Monsters Inside The Room:";
+	mes "^880000Arena Dark Kades^000000";
+	mes "^880000Arena Dark Pyuriel^000000";
+	next;
+	mes "[^880000Arena Master^000000]";
+	mes "Mob Information";
+	mes "Element: ^880000Dark (lvl3)^000000";
+	mes "Size: ^880000Large^000000";
+	mes "Race: ^880000Demon^000000";
+	next;
+	mes "[^880000Arena Master^000000]";
+	mes "MVP Inside The Room";
+	mes "MVP: ^880000King Poring^000000";
+	mes "Element: ^880000Dark (lvl3)^000000";
+	mes "Size: ^880000Large^000000";
+	mes "Race: ^880000Demon^000000";
+	next;
+	goto strt;
+	}
+}
+
+-	script	monsterpoints	-1,{
+
+OnNPCKillEvent:
+	if (killedrid == 3005 || killedrid == 3006) {
+	@c = 8901;
+	@rand = rand(1,2);
+	.@rz = rand(30000);
+		if(@rand == 1) {
+			Zeny += .@rz;
+			dispbottom "You get "+callfunc("F_InsertComma",.@rz)+"z from killing monsters in Arena of Monsters.";
+		}else{
+			getitem @c,rand(1,2);
+		}
+		end;
+	}else if(killedrid == 3007) {
+		getitem @c,20;
+		Zeny += 10000000;
+		dispbottom "You get 10,000,000z from killing monsters in Arena of Monsters.";
+		end;
+	}
+
+}
+
+//===========================spawn monster========================
+bra_dun02,0,0,0,0	boss_monster	Arena King Poring	3007,1,39600000,600000,0
+bra_dun02,0,0,0,0	monster	Arena Dark Kades	3005,150,0,0,0
+bra_dun02,0,0,0,0	monster	Arena Dark Pyuriel	3006,130,0,0,0
+
+bra_dun02	mapflag	noskill
+bra_dun02	mapflag	nowarp
+bra_dun02	mapflag	nomemo
+bra_dun02	mapflag	nosave	SavePoint
+bra_dun02	mapflag	noteleport
+bra_dun02	mapflag	noreturn
+bra_dun02	mapflag	nobranch
+bra_dun02	mapflag	nopenalty
+bra_dun02	mapflag	noemergencycall
+bra_dun02	mapflag	nowarpto
+
+

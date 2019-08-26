@@ -1,0 +1,55 @@
+-	script	test	-1,{
+
+OnNPCKillEvent:
+	set .@rand,rand(1,150);
+	if(killedrid == 3020 && strcharinfo(3) == "koe_t") {
+// Normal Drops for Treasure Box
+		if(.@rand >= 1 && .@rand <= 79) {
+			setarray .@norm_id[0],8903,100, 8900, 50, 8929, 20, 12903, 10, 12904, 10, 12905, 10, 12906, 10, 12907, 10, 12908, 10;
+			for(.@i = 0; .@i < getarraysize(.@norm_id); .@i++) {
+				do {
+					.@loc = rand(getarraysize(.@norm_id));
+				} while (getitemname(.@norm_id[.@loc]) == "null" || .@loc % 2);
+				set .@itemid,.@norm_id[.@loc];
+				set .@itemcount,.@norm_id[.@loc + 1];
+				getitem .@itemid,.@itemcount;
+				announce "[King of Emperium]: "+strcharinfo(0)+" opened a treasure chest and got "+.@itemcount+"x "+getitemname(.@itemid)+"!",0;
+				end;
+			}
+		}
+// Rare Drops for Treasure Box
+		else if(.@rand >= 80 && .@rand <= 100) {
+			setarray .@rare_id[0],7292, rand(1,5), 7289, rand(1,5), 7296, rand(1,5), 7295, rand(1,5), 7036, rand(1,5);
+			for(.@i = 0; .@i < getarraysize(.@rare_id); .@i++) {
+				do {
+					.@loc = rand(getarraysize(.@rare_id));
+				} while (getitemname(.@rare_id[.@loc]) == "null" || .@loc % 2);
+				set .@itemid,.@rare_id[.@loc];
+				set .@itemcount,.@rare_id[.@loc + 1];
+				getitem .@itemid,.@itemcount;
+				announce "[King of Emperium]: "+strcharinfo(0)+" opened a treasure chest and got "+.@itemcount+"x "+getitemname(.@itemid)+"!",0;
+				end;
+			}
+		}
+// Drops Nothing =(
+		else if(.@rand >= 101 && .@rand <= 140) {
+				dispbottom "What a pity, you found nothing from the treasure box!";
+				end;
+			}
+// Ultra Rare Drops for Treasure Box 10%
+		else if(.@rand > 141) {
+			setarray .@cdrop_id[0],7075, 1, 7088, 1, 7078, 1, 7087, 1, 7086, 1, 7085, 1;
+			for(.@i = 0; .@i < getarraysize(.@cdrop_id); .@i++) {
+				do {
+					.@loc = rand(getarraysize(.@cdrop_id));
+				} while (getitemname(.@cdrop_id[.@loc]) == "null" || .@loc % 2);
+				set .@itemid,.@cdrop_id[.@loc];
+				set .@itemcount,.@cdrop_id[.@loc + 1];
+				getitem .@itemid,.@itemcount;
+				announce "[King of Emperium]: "+strcharinfo(0)+" opened a treasure chest and got "+.@itemcount+"x "+getitemname(.@itemid)+"!",0;
+				end;
+			}
+		}
+	end;
+	}
+}

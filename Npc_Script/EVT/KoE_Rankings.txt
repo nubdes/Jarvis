@@ -1,0 +1,55 @@
+midgard3,189,223,6	script	KoE Kill Ladder	837,{
+	mes "[ ^986633KoE Kill Ladder^000000 ]";
+	
+	if (.@size = getarraysize( $topKOE_name$ )){
+		for ( .@i = 0; .@i < .@size; .@i++ )
+			mes "- "+( .@i +1 )+". ^0000FF"+ $topKOE_name$[.@i] +" ^000000: ^FF0000[ "+ $topKOE_points[.@i] +" Kill(s) ]^000000.";
+	}else{
+			mes "The king of Emperium is not started.";
+	}
+	menu "Shop",LOPENSHOP;
+	close;
+LOPENSHOP:
+	callshop "OpenKOESHOP",0;
+	end;
+	
+OnPCKillEvent:
+	if (!getmapflag(strcharinfo(3), koe)) end;
+	topKOE_points++;
+	.@i = 0;
+	
+	while(.@i < .ladderlength){
+		if(topKOE_points > $topKOE_points[.@i]){
+			if( $topKOE_name$[.@i] == strcharinfo(0) ) {
+				$topKOE_points[.@i] = topKOE_points;
+				break;
+			}else if( .@i == .ladderlength - 1 ){
+				$topKOE_points[.@i] = topKOE_points;
+				$topKOE_name$[.@i] = strcharinfo(0);
+				break;
+			}
+			
+			
+			.@K = .@i +1 ;
+			while ( $topKOE_name$[.@K] != strcharinfo(0) && .@K < .ladderlength ) .@K++;
+			if ( .@K < .ladderlength )
+				.@moveamount = .@K - .@i;
+			else 
+				.@moveamount = .ladderlength - 1 - .@i; 
+			copyarray $topKOE_points[.@i +1], $topKOE_points[.@i], .@moveamount;
+			copyarray $topKOE_name$[.@i +1], $topKOE_name$[.@i], .@moveamount;
+			$topKOE_points[.@i] = topKOE_points;
+			$topKOE_name$[.@i] = strcharinfo(0);
+			break;
+		}
+		.@i++;
+	}
+	end;
+	
+	OnInit:
+		.ladderlength = 10; //SET HOW MANY PLAYERS ON THE LADDER
+		waitingroom "KoE Kill Ladder",0;
+	end;
+}
+
+-	pointshop	OpenKOESHOP	-1,topKOE_points,501:1

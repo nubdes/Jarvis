@@ -1,0 +1,31 @@
+midgard3,198,177,6	script	wqkejhwqeq	100,{
+// Randomize Option Values
+	setarray .@Possible[0],
+					RDMOPT_VAR_STRAMOUNT,
+					RDMOPT_VAR_AGIAMOUNT,
+					RDMOPT_VAR_VITAMOUNT,
+					RDMOPT_VAR_INTAMOUNT,
+					RDMOPT_VAR_DEXAMOUNT,
+					RDMOPT_VAR_LUKAMOUNT,
+					RDMOPT_VAR_MAXHPPERCENT,
+					RDMOPT_VAR_MAXSPPERCENT;
+	for(.@i = 0; .@i < getarraysize(.@Possible); .@i++)
+	.@Final = rand(getarraysize(.@Possible));
+// Finalizing Option Value for Result
+	.@id = getequipid(EQI_HEAD_TOP); // save id of the item
+	.@r = getequiprefinerycnt(EQI_HEAD_TOP); //save refinery count
+	setarray .@OptID[0],.@Possible[.@Final];
+	setarray .@OptVal[0],rand(1,5);
+	setarray .@OptParam[0],0;
+// Progress the item.
+	if(!getequipisequiped(EQI_HEAD_TOP)) { //custom check
+		mes "[ Enchanter ]";
+		mes "You're not wearing anything there that i can enchant.";
+		emotion ET_FRET;
+		close;
+		}
+		delitem .@id,1;
+		getitem3 .@id,1,1,.@r,0,0,0,0,0,.@OptID,.@OptVal,.@OptParam;
+		equip .@id;
+		end;
+}

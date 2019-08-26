@@ -1,0 +1,267 @@
+//=======================================
+//		Script By:
+//		eAthenanabs
+//
+//		http://astral-RO.net
+//
+//=======================================
+//= Info:
+//
+//= This event triggers every 15 minutes of the server time.
+//=======================================
+//= Mechanics:
+//
+//= Players have to run / choose a box between box 1 up to box 4
+//= After that, that NPCs picks a number randomly
+//= (obviously,between 1-4)
+//= All players that are not inside the box that the NPC chose will
+//= all be eliminated.
+//= This event would run until there's only 1 player left.
+//= Winner would get an incrementation on its #EVENTPOINTS variable
+//= (users can simply just change the prize given.)
+//
+//========================================
+
+-	script	DiceTrigger	-1,{
+
+OnInit:
+disablenpc "Dice Event Warper#dice";
+disablenpc "Claim Your Prize!#dice";
+end;
+
+
+OnMinute20:
+if(agitcheck() == 1 || $@diceon == 1) end;
+enablenpc "Dice Event Warper#dice";
+announce "Dice Man: We are going to have a Dice Event",bc_all,0x64E986;
+sleep 1000;
+announce "Dice Man: For those who want to join, please warp to midgard3 226 179",bc_all,0x64E986;
+sleep 1000;
+announce "Dice Man: The Warper would be open for 1 minute",bc_all,0x64E986;
+sleep 30000;
+announce "Dice Man: Last 30 Seconds.",bc_all,0x64E986;
+sleep 30000;
+announce "Dice Man: Warper Closed.",bc_all,0x64E986;
+disablenpc "Dice Event Warper#dice";
+donpcevent "DiceEvent::OnDiceStart";
+set $@diceon,1;
+end;
+
+}
+
+//Edit to where would you place the warper
+midgard3,226,179,3	script	Dice Event Warper#dice	723,{
+
+
+mes "Do you want to join the Dice Event?";
+menu "Yes",-;
+warp "quiz_02",55,87;
+end;
+
+}
+
+quiz_02,55,90,3	script	Got Stuck?#dice	779,{
+
+mes "[ Got Stuck? ]";
+mes "Do you wish to go back?";
+menu "Yes",-;
+warp "midgard3",200,172;
+end;
+
+}
+
+
+quiz_02,37,80,3	script	Box 1	111,{
+
+warp "quiz_02",37,70;
+end;
+
+}
+
+quiz_02,49,80,3	script	Box 2	111,{
+
+warp "quiz_02",49,70;
+end;
+
+}
+
+quiz_02,61,80,3	script	Box 3	111,{
+
+warp "quiz_02",61,70;
+end;
+
+}
+
+
+quiz_02,73,80,3	script	Box 4	111,{
+
+warp "quiz_02",73,70;
+end;
+
+}
+
+quiz_02,37,64,3	script	Go Back#1	858,{
+
+warp "quiz_02",55,76;
+end;
+
+}
+
+
+quiz_02,49,64,3	script	Go Back#2	858,{
+
+warp "quiz_02",55,76;
+end;
+
+}
+
+quiz_02,61,64,3	script	Go Back#3	858,{
+
+warp "quiz_02",55,76;
+end;
+
+}
+
+quiz_02,73,64,3	script	Go Back#4	858,{
+
+warp "quiz_02",55,76;
+end;
+
+}
+
+
+-	script	DiceEvent	-1,{
+
+OnDiceStart:
+mapannounce "quiz_02","We are about to start the Dice event.",bc_blue;
+sleep 1000;
+mapannounce "quiz_02","Rules are simple:",bc_blue;
+sleep 1000;
+mapannounce "quiz_02","I'm going to pick a number, 1 to 4. Then I'll do a countdown from 5 to 0",bc_blue;
+sleep 1000;
+mapannounce "quiz_02","All you have to do is go to box of the number you want",bc_blue;
+sleep 1000;
+mapannounce "quiz_02","Example, If I get the number 4, All players standing on number 1 to 3 loses.",bc_blue;
+sleep 1000;
+mapannounce "quiz_02","We'll do it again and again until we have 1 player left on this map.",bc_blue;
+sleep 2000;
+mapannounce "quiz_02","Before I forget, you must GO INSIDE THE BOX! because if you're caught standing outside the box you'll be automatically disqualified!",bc_blue;
+sleep 2000;
+mapannounce "quiz_02","That's it.. Now let's get it on!",bc_blue;
+sleep 3000;
+goto L_start;
+end;
+
+
+L_start:
+enablenpc "Go Back#1";
+enablenpc "Go Back#2";
+enablenpc "Go Back#3";
+enablenpc "Go Back#4";
+if(getmapusers("quiz_02") == 1) goto L_winner;
+enablenpc "Box 1";
+enablenpc "Box 2";
+enablenpc "Box 3";
+enablenpc "Box 4";
+if(getmapusers("quiz_02") == 0) goto L_noone;
+if(getmapusers("quiz_02") > 1) {
+set $@number,rand(1,4);
+sleep 1000;
+mapannounce "quiz_02","I'm ready to pick a number. Please go to the box of the number you want! Go go go!",bc_blue;
+sleep 20000;
+mapannounce "quiz_02","5",bc_blue;
+sleep 1500;
+mapannounce "quiz_02","4",bc_blue;
+sleep 1500;
+mapannounce "quiz_02","3",bc_blue;
+sleep 1500;
+mapannounce "quiz_02","2",bc_blue;
+sleep 1500;
+mapannounce "quiz_02","1",bc_blue;
+disablenpc "Box 1";
+disablenpc "Box 2";
+disablenpc "Box 3";
+disablenpc "Box 4";
+disablenpc "Go Back#1";
+disablenpc "Go Back#2";
+disablenpc "Go Back#3";
+disablenpc "Go Back#4";
+areawarp "quiz_02",32,95,79,76,"midgard3",226,179;
+areawarp "quiz_02",80,85,80,76,"midgard3",226,179;
+areawarp "quiz_02",31,85,31,76,"midgard3",226,179;
+if(getmapusers("quiz_02") == 0) goto L_noone;
+sleep 1000;
+mapannounce "quiz_02","Time's Up. Winning number is "+$@number+"!",bc_blue;
+	if($@number == 4) goto L_Lose1;
+	if($@number == 3) goto L_Lose2;
+	if($@number == 2) goto L_Lose3;
+	if($@number == 1) goto L_Lose4;
+end;
+
+}
+
+L_Lose1:
+areawarp "quiz_02",33,73,41,52,"midgard3",226,179;
+areawarp "quiz_02",45,73,53,52,"midgard3",226,179;
+areawarp "quiz_02",57,73,65,52,"midgard3",226,179;
+goto L_start;
+end;
+
+L_Lose2:
+areawarp "quiz_02",33,73,41,52,"midgard3",226,179;
+areawarp "quiz_02",45,73,53,52,"midgard3",226,179;
+areawarp "quiz_02",69,73,77,52,"midgard3",226,179;
+goto L_start;
+end;
+
+L_Lose3:
+areawarp "quiz_02",33,73,41,52,"midgard3",226,179;
+areawarp "quiz_02",57,73,65,52,"midgard3",226,179;
+areawarp "quiz_02",69,73,77,52,"midgard3",226,179;
+goto L_start;
+end;
+
+L_Lose4:
+areawarp "quiz_02",45,73,53,52,"midgard3",226,179;
+areawarp "quiz_02",57,73,65,52,"midgard3",226,179;
+areawarp "quiz_02",69,73,77,52,"midgard3",226,179;
+goto L_start;
+end;
+
+L_noone:
+announce "No one won the Dice Event!",bc_all,0x64E986;
+disablenpc "Claim Your Prize!#dice";
+disablenpc "Dice Event Warper#dice";
+set $@diceon,0;
+end;
+
+L_winner:
+enablenpc "Claim Your Prize!#dice";
+disablenpc "Dice Event Warper#dice";
+end;
+
+}
+
+quiz_02,55,84,3	script	Claim Your Prize!#dice	904,{
+
+getitem 8900,5;
+announce strcharinfo(0)+" won the Dice Event!",bc_all,0x64E986;
+disablenpc "Claim Your Prize!#dice";
+disablenpc "Dice Event Warper#dice";
+dispbottom "Congratulations! You won 5x "+getitemname(8900)+".";
+warp "midgard3",200,191;
+set $@diceon,0;
+end;
+
+}
+
+// -- Mapflags
+quiz_02	mapflag	nowarp
+quiz_02	mapflag	nowarpto
+quiz_02	mapflag	noteleport
+quiz_02	mapflag	nosave
+quiz_02	mapflag	nomemo
+quiz_02	mapflag	nobranch
+quiz_02	mapflag	noloot
+quiz_02	mapflag	noskill
+quiz_02	mapflag	nopenalty

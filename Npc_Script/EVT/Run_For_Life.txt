@@ -1,0 +1,167 @@
+-	script	announce_nvz	-1,{
+
+if(agitcheck() == 1 || agitcheck2() == 2) end;
+
+OnMinute40:
+OnWhisperGlobal:
+announce "The run for your life event will start in 3 minutes!",bc_all,0x64E986;
+killmonsterall "quiz_01";
+sleep 5000;
+announce "The NPC 'Novice vs. Zombie' has appeared in midgard3 170 179!",bc_all,0x64E986;
+enablenpc "Run For Your Life";
+sleep 55000;
+announce "The run for your life event will begin in 2 minutes. You better get ready!",bc_all,0x64E986;
+sleep 54000;
+announce "Please proceed to midgard3 170 179 to join",bc_all,0x64E986;
+sleep 60000;
+announce "The run for your life event will begin in 1 minute!",bc_all,0x64E986;
+sleep 45000;
+announce "Please proceed to midgard3 170 179 to join",bc_all,0x64E986;
+sleep 30000;
+mapannounce "quiz_01","In 30 seconds the monster will appear!",bc_all,0x64E986;
+sleep 28000;
+announce "Please proceed to midgard3 170 179 to join",bc_all,0x64E986;
+sleep 25000;
+announce "The run for your life event will begin in ~5~",bc_all,0x64E986;
+sleep 1000;
+announce "~4~",bc_all,0x64E986;
+sleep 1000;
+announce "~3~",bc_all,0x64E986;
+sleep 1000;
+announce "~2~",bc_all,0x64E986;
+sleep 1000;
+announce "~1~",bc_all,0x64E986;
+sleep 1000;
+if ( getmapusers("quiz_01") == 1 ) {
+	announce "The run for your life event entry will extend for 30 sec.",bc_all,0x64E986;
+	announce "Please proceed to midgard3 170 179 to join",bc_all,0x64E986;
+	sleep 10000;
+	announce "The run for your life event entry will extend for 20 sec.",bc_all,0x64E986;
+	announce "Please proceed to midgard3 170 179 to join",bc_all,0x64E986;
+	sleep 10000;
+	announce "The run for your life event entry will extend for 10 sec.",bc_all,0x64E986;
+	announce "Please proceed to midgard3 170 179 to join",bc_all,0x64E986;
+	sleep 5000;
+	announce "Event run for your life will begin in ~5~",bc_all,0x64E986;
+	sleep 1000;
+	announce "~4~",bc_all,0x64E986;
+	sleep 1000;
+	announce "~3~",bc_all,0x64E986;
+	sleep 1000;
+	announce "~2~",bc_all,0x64E986;
+	sleep 1000;
+	announce "~1~",bc_all,0x64E986;
+	sleep 1000;
+	if ( getmapusers("quiz_01") > 1 ) { callsub L_start; end; }
+	disablenpc "Run For Your Life";
+	mapannounce "quiz_01","You have won, please approach to Prize NPC.",0;
+	enablenpc "Prize";
+	set $@NvZCounter,0;
+	end;
+}
+L_start:
+announce "'Run for your life' has begun!!",bc_all,0x64E986;
+monster "quiz_01",42,369,"Zombie",1036,2;
+disablenpc "Run For Your Life";
+sleep 10000;
+monster "quiz_01",42,369,"Zombie-2",1036,3;
+sleep 10000;
+monster "quiz_01",42,369,"Zombie-3",1036,3;
+sleep 10000;
+monster "quiz_01",42,369,"Zombie-4",1036,3;
+initnpctimer;
+end;
+
+OnTimer5000:
+if ( getmapusers("quiz_01") == 0 )
+{
+killmonsterall "quiz_01";
+announce "'Run For Your Life' has ended. All of the Zombies are gone.",bc_all,0x64E986;
+disablenpc "Prize";
+stopnpctimer;
+end;
+}
+else if ( getmapusers("quiz_01") > 1 )
+{
+if ($@NvZCounter >= 5){
+    switch(rand(0,2)){
+        case 0: mapannounce "quiz_01",getmapusers("quiz_01") +" players are still alive.",0,0x00FF00; break;
+        case 1: mapannounce "quiz_01",getmapusers("quiz_01") +" players are STILL alive? Are you sure you're not cheating?",0,0x00FF00; break;
+        case 2: mapannounce "quiz_01",getmapusers("quiz_01") +" players are STILL ALIVE? Seriously, I'm gonna have to report you.",0,0x00FF00; break;
+        }
+} else {
+    mapannounce "quiz_01",getmapusers("quiz_01") +" players are still alive.",0,0x00FF00;
+}
+sleep 10000;
+set $@NvZCounter,$@NvZCounter+1;
+initnpctimer;
+end;
+}
+initnpctimer;
+end;
+
+OnPCDieEvent:
+getmapxy .@mapnvz$,.@xnvz,.@ynvz,UNITTYPE_PC;
+if ( .@mapnvz$ == "quiz_01") {
+warp "midgard3",170,179;
+atcommand "@alive "+ strcharinfo(0);
+dispbottom "You have lost...";
+}
+sleep 1000;
+if ( .@mapnvz$ == "quiz_01" && getmapusers("quiz_01") == 1 ) {
+killmonsterall "quiz_01";
+mapannounce "quiz_01","You have won, please approach to Prize NPC.",0;
+enablenpc "Prize";
+set $@NvZCounter,0;
+stopnpctimer;
+end;
+}
+end;
+}
+
+quiz_01,42,369,3	script	Prize	72,{
+if (sex == 1) {
+announce "In 'Run For Your Life', " + strcharinfo (0) + " won! Let's congratulate him!",bc_all,0x64E986;
+}
+else {
+announce "In 'Run For Your Life' " + strcharinfo (0) + " won! Let's congratulate her!",bc_all,0x64E986;
+};
+getitem 8900,5;
+warp "midgard3",170,179;
+sleep 250;
+disablenpc "Prize";
+end;
+}
+
+midgard3,170,179,3	script	Run For Your Life	1015,{
+if (BaseLevel > 1) goto L_No;
+if (class == 0) goto L_event;
+if (class > 0) goto L_No;
+if (checkcart()) goto L_No;
+L_event:
+sc_end SC_ALL;
+percentheal 100,100;
+atcommand "@storeall";
+warp "quiz_01",42,369;
+close;
+
+L_No:
+mes "[^0000FFRun For Your Life^000000]";
+mes "Brains!!!!!!! D=<";
+mes "^696969You are not a level 1 novice or has a cart! Cheater!^000000";
+close;
+
+OnInit:
+	disablenpc "Run For Your Life";
+	disablenpc "Prize";
+	end;
+
+}
+
+// mapflag
+
+quiz_01	mapflag	nocommand	2
+quiz_01	mapflag	nosave
+quiz_01	mapflag	nomemo
+quiz_01	mapflag	nobranch
+quiz_01	mapflag	noreturn

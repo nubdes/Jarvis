@@ -1,0 +1,256 @@
+
+-	script	KoE	CLEAR_NPC,{
+
+OnInit:
+	disablenpc "Exit#KoE";
+	donpcevent "::OnRevKoE";
+	bindatcmd "koe",strnpcinfo(3)+"::OnKoE";
+	// Max Idle time in seconds
+	.Idle_Time = 500;
+	// Prize to Winners
+	setarray .KoE_Rewards, 
+		8903, 3,
+		8904, 1,
+		8921, 5,
+		8923, 3;
+	end;
+
+OnKoE:
+	if (getgroupid() < 90) end;
+	mes "[ King of Emperium Staff ]";
+	mes "Hello, GM ^0055FF"+ strcharinfo(0) +"^000000!";
+	mes " ";
+	mes "Do you want to start the King of Emperium Event?";
+	switch(select("Start The Event:Stop The Event:Reset Ownership:Not Now")) {
+		case 1: close2; goto L_Start;
+		case 2: close2; goto L_End;
+		case 3: close2; goto OnGuildBreak;
+		default: close;
+	}
+
+OnTreasureBox:
+	setarray .@X[0],48,51,48,51;
+	setarray .@Y[0],51,48,48,51;
+	killmonsterall "koe_t";
+	sleep 3000;
+	for(set .@i,0; .@i < getarraysize(.@X); set .@i,.@i + 1)
+		monster "koe_t",.@X[.@i],.@Y[.@i],"--ja--",3020,1,"";
+	end;
+
+L_Start:
+	if (!.koe_start) {
+			//koe_toggle(1);
+			set .@Min,rand(50,60);
+			removemapflag "koe",mf_noskill;
+			setmapflag "koe",mf_gvg;
+			setmapflag "koe",mf_gvg_castle;
+			announce "The "+getcastlename("koe")+" has begun! Type @joinkoe if you want to participate.",bc_all,0x64E986;
+
+		set .koe_start, 1;
+			//disablenpc "koeguildcheck";
+			disablenpc "Exit#KoE";
+			donpcevent "::OnRevKoE";
+			maprespawnguildid "koe",getcastledata("koe",1), 6;
+			monster "koe",50,50,"Emperium",1288,1,strnpcinfo(0)+"::OnEmpDead";
+
+		sleep (.@Min * 60000);
+			//koe_toggle(0);
+			donpcevent strnpcinfo(0)+"::OnTreasureBox";
+			announce "The King of Emperium is over!",bc_all,0x64E986;
+
+		set .koe_start, 0;
+			killmonsterall "koe";
+			enablenpc "Exit#KoE";
+			//enablenpc "koeguildcheck";
+			setmapflag "koe",mf_noskill;
+			removemapflag "koe",mf_gvg;
+			removemapflag "koe",mf_gvg_castle;
+
+			sleep 3000;
+			.@gid = getcastledata("koe", 1);
+			if (.@gid > 0) {
+				// Give Rewards
+				getguildmember(.@gid, 0);
+				copyarray(.@name$[0], $@guildmembername$[0], $@guildmembercount);
+				getguildmember(.@gid, 1);
+				copyarray(.@char_id[0], $@guildmembercid[0], $@guildmembercount);
+				getguildmember(.@gid, 2);
+				copyarray(.@acc_id[0], $@guildmemberaid[0], $@guildmembercount);
+				.@count = $@guildmembercount;
+				for (.@i = 0; .@i < .@count; ++.@i) {
+					// Check if logged in
+					if (!isloggedin(.@acc_id[.@i], .@char_id[.@i]))
+						continue;
+					// Checked if idle
+					if (checkidle(.@name$[.@i]) >= .Idle_Time)
+						continue;
+					// Check if vending
+					if (checkvending(.@name$[.@i]) > 0)
+						continue;
+					for (.@j = 0; .@j < getarraysize(.KoE_Rewards); .@j += 2) {
+						getitem(.KoE_Rewards[.@j], .KoE_Rewards[.@j+1], .@acc_id[.@i]);
+					}
+				}
+			}
+			disablenpc "Exit#KoE";
+			maprespawnguildid "koe", .@gid, 3;
+		}
+	end;
+
+OnEmpDead:
+	$koegid = getcharid(2);
+	setcastledata "koe",1,getcharid(2);
+	donpcevent "::OnRevKoE";
+	announce "The current King of Emperium is the [ "+strcharinfo(2)+" ] guild.",bc_all,0x64E986;
+	maprespawnguildid "koe",getcastledata("koe",1), 6;
+	if (.koe_start) {
+		sleep 2000;
+		monster "koe",50,50,"Emperium",1288,1,strnpcinfo(0)+"::OnEmpDead";
+	}
+	end;
+
+L_End:
+OnMinute00:
+	if (.koe_start)
+		awake "KoE";
+	end;
+
+OnGuildBreak:
+	setcastledata "koe",1,0;
+	$koegid = 0;
+	donpcevent "::OnRevKoE";
+	announce "The King of Emperium ownership reset!",bc_all,0x64E986;
+	if (mobcount("koe",strnpcinfo(0)+"::OnEmpDead")) {
+		killmonsterall "koe";
+		monster "koe",50,50,"Emperium",1288,1,strnpcinfo(0)+"::OnEmpDead";
+	}
+	end;
+
+}
+
+-	script	KoE_Entrance	CLEAR_NPC,{
+
+OnJoinKoE:
+	if (!getmapflag(strcharinfo(3),mf_town)) {
+		dispbottom "KoE Warp Commands are only available in Towns.";
+		end;
+	}
+	set @header$,"[ King of Emperium ]";
+	mes @header$;
+	if (!getcharid(2)) {
+		mes "You must have a guild to participate in the ^FF0000King of Emperium Event^000000.";
+		close;
+	}
+    mes "Would you like to participate in the ^FF0000King of Emperium Event^000000?";
+	if (!getvariableofnpc(.koe_start,"KoE") && getcharid(0) != getguildmasterid(getcastledata("koe",1))){
+		next;
+		mes @header$;
+		mes "But there is no King of Emperium event right now.";
+		close;
+	}
+	switch(select(((getvariableofnpc(.koe_start,"KoE"))?"Participate":""),(!getvariableofnpc(.koe_start,"KoE") && getcharid(0) == getguildmasterid(getcastledata("koe",1))?"Treasure Room":""))){
+		case 1:	
+			setarray .@X[0],50,50,7,92;
+			setarray .@Y[0],7,92,50,50;
+			set .@Random,rand(getarraysize(.@X));
+			warp "koe",.@X[.@Random],.@Y[.@Random];
+			end;
+		case 2:
+			warp "koe_t",51,53;
+			end;
+		default: close;
+	}
+
+OnRevKoE:
+	flagemblem getcastledata("koe",1);
+	end;
+
+OnInit:
+	bindatcmd "joinkoe",strnpcinfo(3)+"::OnJoinKoE";
+	end;
+}
+
+midgard3,231,240,4	duplicate(KoE_Entrance)	The King#6	108
+
+koe,50,50,5	script	Exit#KoE	4_M_KY_SOLD,{
+
+	set @header$,"[ KoE Exit ]";
+	mes @header$;
+	mes "Thank you for participating.";
+	next;
+	warp "SavePoint",0,0;
+	close;
+}
+
+koe_t,49,57,5	script	Treasure Room Exit#KoE	708,{
+
+	set @header$,"[ Treasure Room Exit ]";
+	mes @header$;
+	mes "King of Emperium treasure room will replenished every end of the event.";
+	next;
+	warp "SavePoint",0,0;
+	close;
+}
+
+-	script	KoE_Flag	CLEAR_NPC,{
+	set .@gid, getcastledata("koe",1);
+	if (.@gid == 0) end;
+	
+	set @header$,"[ King of Emperium ]";
+	mes @header$;
+	.@status = getvariableofnpc(.koe_start,"KoE");
+	mes "The Current King of Emperium is the [ ^0055FF"+ getguildname(.@gid) +"^000000 ] guild.";
+	close;
+
+OnRevKoE:
+	flagemblem getcastledata("koe",1);
+	end;
+}
+
+koe,50,37,4	duplicate(KoE_Flag)	King of Emperium#2	GUILD_FLAG
+koe,62,50,6	duplicate(KoE_Flag)	King of Emperium#3	GUILD_FLAG
+koe,37,49,2	duplicate(KoE_Flag)	King of Emperium#4	GUILD_FLAG
+koe,49,62,0	duplicate(KoE_Flag)	King of Emperium#5	GUILD_FLAG
+
+koe	mapflag	novending
+koe	mapflag	nobranch
+koe	mapflag	nomemo
+koe	mapflag	nopenalty
+koe	mapflag	noreturn
+koe	mapflag	nosave	SavePoint
+koe	mapflag	noteleport
+koe	mapflag	nowarp
+koe	mapflag	nowarpto
+koe	mapflag	pvp	off
+koe	mapflag	gvg
+
+koe_t	mapflag	pvp	off
+koe_t	mapflag	nowarp
+koe_t	mapflag	nowarpto
+koe_t	mapflag	nobranch
+koe_t	mapflag	nomemo
+koe_t	mapflag	nosave	SavePoint
+koe_t	mapflag	noteleport
+
+/*
+// KoE's SGH Ownership
+-	script	koeguildcheck	-1,{
+
+OnPCLoginEvent:
+OnPCStatCalcEvent: // when changing equip, stat, etc.. this will trigger..
+    .@hgid = 5022; // solar god helm id
+
+    if ( getcharid(2) != $koegid || !getcharid(2) ) {
+        if (countitem(.@hgid))
+            message strcharinfo(0),"Only the current [ King of Emperium ] holder can wear this helm.";
+            delitem .@hgid, countitem(.@hgid);
+	    end;
+    }
+    if ( getcharid(2) == $koegid ) {
+        if (! countitem(.@hgid))
+            getitem .@hgid, 1;
+	    end;
+    }
+    end;
+}
+*/

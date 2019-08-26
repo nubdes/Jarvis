@@ -1,0 +1,130 @@
+midgard3,195,189,6	script	Arena Master	655,{
+
+
+if ( agitcheck() || agitcheck2() ) {
+	mes "[ Arena Master ]";
+	mes "I'm afraid i can't let you in during the WoE times.";
+	close;
+	}
+
+if (Class == 0 || BaseLevel < .baselevel || #pkstat == 0) {
+	mes "[ Arena Master ]";
+	mes "Sorry it seems that you ddn't meet the requirements BaseLv."+.baselevel+" and higher than Novice class can only join the arena.";
+	mes " ";
+	mes "And oh! Don't forget to turn on your @pk before entering goodluck!";
+	close;
+	}
+
+// Core Script
+	mes "[ Information ]";
+	mes "Welcome to the arena room, here's a little ^ff0000infromation^000000 about the arena setup.";
+	mes " ";
+	mes "Once every kill you make, you will gain buffs and full hp/sp heal as well as skull of the killed player.";
+	mes " ";
+	mes "You ready?!";
+switch(select("Free for All [ "+getmapusers("guild_vs3")+" / 100 ]:I have no balls.")) {
+	case 1:
+		if (getmapusers("guild_vs3") > 255) callsub S_full;
+		announce "[ Arena Master ]: "+strcharinfo(0)+" has entered the pvp arena!",bc_all,0x5DADE2; //announce and end
+		warp "guild_vs3" ,0,0;
+		end;
+	case 3:
+		close;
+
+S_full:
+	mes " ";
+	mes "I'm sorry, this arena is full.  Please try again later...";
+	close;
+	}
+
+OnPCKillEvent:
+	attachrid killedrid;
+	.@charid = getcharid(0);
+	attachrid killerrid;
+	if ( strcharinfo(3) == "guild_vs3" ) {
+		getitem2 7420, 1,1,0,0, 254, 0, .@charid % pow(2,16), .@charid / pow(2,16);
+		specialeffect2 EF_HEAL2;
+		percentheal 100,100;
+		specialeffect2 EF_INCAGILITY;
+		sc_start SC_INCREASEAGI,240000,10;
+		specialeffect2 EF_BLESSING;
+		sc_start SC_BLESSING,240000,10;
+		}
+		end;
+
+OnInit:
+	.baselevel = 255;
+	while (1) {
+	delwaitingroom;
+	set .@count, getmapusers("guild_vs3");
+	waitingroom "PvP Room [ "+.@count+" ]",0;
+	//waitingroom "PvP Room [ "+ .@count + ((.@count==1) ? " User" : " Users") +" ]",0;
+	sleep 1000;
+	}
+}
+
+guild_vs3,21,78,6	script	Clause	105,{
+
+switch(select("Exit Arena:I'll stay.")) {
+	case 1:
+		mes "[ Clause ]";
+		mes "Please ^ff0000don't move^000000 while im sending you back to your savepoint.";
+		mes " ";
+		mes "It will take 5 seconds to finish the process, Be patient.";
+		progressbar "red",5;
+		warp "SavePoint",0,0;
+		end;
+	case 2:
+		mes "[ Clause ]";
+		mes "Good choice!";
+		close;
+}
+
+//OnInit:
+//while( 1 ){
+//	npcwalkto 21,rand(78,20);
+//	sleep 2000;
+//	}
+//	end;
+
+}
+guild_vs3,78,79,6	script	Danafor	105,{
+
+switch(select("Exit Arena:I'll stay.")) {
+	case 1:
+		mes "[ Danafor ]";
+		mes "Please ^ff0000don't move^000000 while im sending you back to your savepoint.";
+		mes " ";
+		mes "It will take 5 seconds to finish the process, Be patient.";
+		progressbar "red",5;
+		warp "SavePoint",0,0;
+		end;
+	case 2:
+		mes "[ Danafor ]";
+		mes "Good choice!";
+		close;
+}
+
+//OnInit:
+//while( 1 ){
+//	npcwalkto 78,rand(20,79);
+//	sleep 2000;
+//	}
+//	end;
+
+}
+
+
+
+// Duplicates
+//============================================================
+guild_vs3	mapflag	pvp
+guild_vs3	mapflag	nomemo
+guild_vs3	mapflag	noteleport
+guild_vs3	mapflag	noteleport
+guild_vs3	mapflag	nowarp
+guild_vs3	mapflag	nowarpto
+guild_vs3	mapflag	pvp_noparty
+guild_vs3	mapflag	pvp_noguild
+guild_vs3	mapflag	nobranch
+guild_vs3	mapflag	nosave

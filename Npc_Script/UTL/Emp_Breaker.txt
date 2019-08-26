@@ -1,0 +1,153 @@
+midgard3,177,210,6	script	Emperium Break Tester	4_M_ACROSS,{
+
+// Configuration
+set .Map$,"job3_arch03";
+set .TopRank,10;
+setarray .Instruction$[0],
+	"Listen carefully. This is the Emperium Breaking Test..",
+	"to assess your Emperium Breaking time and speed.",
+	"Please prepare. Do your best to break it!";
+
+	while( 1 ) {
+	set @header$,"[ Emperium Tester ]";
+	mes @header$;
+	mes "I know what you came here for..";
+	mes " ";
+	mes "I can let you on in an Emperium Breaking Test. Here you will be able to calculate your Emperium damage and Breaking speed.";
+	next;
+	switch(select( ( getmapusers( .Map$ ) )?"^FF0000Not Available":"^0000FFAvailable^000000",
+		"Top ^FF0000"+.TopRank+"^000000 Breaker Ladder",
+		(getgroupid() < 3)?"":"^FF0000[GM]^000000 Reset Room",
+		(getgroupid() < 3)?"":"^FF0000[GM]^000000 Reset Ladder" )){
+
+	case 1:
+		if( !getcharid(2) ) {
+			mes @header$;
+			mes "As a requirement..";
+			mes " ";
+			mes "You must belong to a guild with the Guild's Glory skill. Apologies!";
+			close;
+		}
+		if( getmapusers( .Map$ ) ){
+			mes @header$;
+			mes "Wait for your turn..";
+			mes " ";
+			mes "The testing room is currently unavailable. Come again later!";
+			next;
+			break;
+		}
+		warp .Map$,30,24;
+		killmonster .Map$,"All";
+		removemapflag .Map$,mf_noskill;
+		removemapflag .Map$,mf_gvg;
+		donpcevent strnpcinfo(0)+"::OnReady";
+		end;
+
+	case 2:
+		mes @header$;
+		mes "^FF0000Latest Record^000000: "+LatestRecord/1000+"."+LatestRecord%1000+" Seconds.";
+		for( set .@i,0; .@i < .TopRank; set .@i,.@i + 1 ) {
+			if( !$TopRankTime[.@i] ) break;
+			mes "^FF0000Top "+( .@i + 1 )+"^000000: "+$TopName$[.@i]+" ";
+			mes "^0000FFTime Taken^000000: [ "+$TopRankTime[.@i]/1000+"."+$TopRankTime[.@i]%1000+" Sec. ]";
+		}
+		next;
+		break;
+
+	case 3:
+		mes @header$;
+		mapannounce .Map$,"A GM has reset the Emperium Breaking Test.",0,0x00FF00;
+		killmonster .Map$,"All";
+		mes "Resetting..";
+		mes " ";
+		sleep2 3000;
+		mapwarp .Map$,"midgard3",178,208;
+		mes "Reset Done.";
+		mes "Player inside the Testing Room has been warped out. Thank you!";
+		next;
+		break;
+
+	case 4:
+		switch( select( "^0000FFAll Players^000000:^FF0000One Player^000000" ) ){
+			case 1:
+				mes @header$;
+				deletearray $TopRankTime[0],getarraysize( $TopRankTime );
+				deletearray $TopName$[0],getarraysize( $TopName$ );
+				mes "Ladder Reset.";
+				break;
+			case 2:
+				mes @header$;
+				mes "Please input the ^FF0000character name^000000 of player you want to delete.";
+				input .Name$;
+				for( set .@i,0; .@i < .TopRank; set .@i,.@i + 1 ){
+					if( .Name$ == $TopName$[.@i] ){
+						deletearray $TopName$[.@i],1;
+						deletearray $TopRankTime[.@i],1;
+						mes " ";
+						mes "Removed ^FF0000"+.Name$+"^000000 from the list.";
+					}
+				}
+			}
+		next;
+		break;
+	}
+}
+
+OnReady:
+sleep2 3000;
+	for( set .@i,0; .@i < getarraysize( .Instruction$ ); set .@i,.@i + 1 ) {
+		mapannounce .Map$,.Instruction$[.@i],0,0x00FF00;
+		sleep2 2500;
+		}
+
+	for( set .@i,5; .@i > 0; set .@i,.@i - 1 ) {
+		mapannounce .Map$,"Count Down: "+.@i+" Seconds.",0,0x00FF00;
+		sleep2 1000;
+		}
+
+	mapannounce .Map$,"Skills disabled. Hit the Emperium!",0,0x00FF00;
+	setmapflag .Map$,mf_noskill;
+	setmapflag .Map$,mf_gvg;
+	monster .Map$,30,28,"Emperium",1288,1,strnpcinfo(0)+"::OnBreaked";
+	set .Record,0;
+	sleep2 500;
+	initnpctimer;
+	end;
+
+OnTimer600000:
+	if( !mobcount( .Map$,strnpcinfo(0)+"::OnBreaked" ) ) end;
+		mapannounce .Map$,"You've spent too much time here. Now go out!",0,0x00FF00;
+		sleep2 3000;
+		mapwarp .Map$,"midgard3",178,208;
+		stopnpctimer;
+	end;
+
+OnBreaked:
+	set .Time,getnpctimer(0);
+	copyarray .@tempName$[0],$TopName$[0],getarraysize( $TopName$ );
+	copyarray .@tempRecord[0],$TopRankTime[0],getarraysize( $TopRankTime[0] );
+	set LatestRecord,.Time;
+	for( set .@i,0; .@i < .TopRank; set .@i,.@i + 1 ){
+		if( .Time < $TopRankTime[.@i] || !$TopRankTime[.@i] ){
+				set $TopRankTime[.@i],.Time;
+				set $TopName$[.@i],strcharinfo(0);
+				copyarray $TopRankTime[.@i + 1],.@tempRecord[0],getarraysize( .@tempRecord );
+				copyarray $TopName$[.@i + 1],.@tempName$[0],getarraysize( .@tempName$ );
+			mapannounce .Map$,"[ "+strcharinfo(0)+" ] Achieved Top "+( .@i + 1 )+" in Emperium Breaking with "+.Time/1000+"."+.Time%1000+" seconds!",0,0x00FF00;
+			break;
+			}
+		}
+	stopnpctimer;
+	mapannounce .Map$,"Current Time Taken: "+.Time/1000+"."+.Time%1000+" seconds.",0,0x00FF00;
+	removemapflag .Map$,mf_noskill;
+	sleep2 5000;
+	mapwarp .Map$,"midgard3",178,208;
+	end;
+}
+
+job3_arch03	mapflag	pvp	off
+job3_arch03	mapflag	nocommand	1
+job3_arch03	mapflag	gvg	on
+job3_arch03	mapflag	gvg_castle
+job3_arch03	mapflag	monster_noteleport
+job3_arch03	mapflag	nosave	SavePoint

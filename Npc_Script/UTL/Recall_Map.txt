@@ -1,0 +1,20 @@
+-	script	atcmd_examplere	-1,{
+OnInit:
+	bindatcmd "recallmap",strnpcinfo(3)+"::OnAtcommand",1,99;
+	end;
+OnAtcommand:
+	.@count = query_sql( "select `char_id`, name from `char` where `last_map` = '"+ strcharinfo(3) +"' and `char_id` != "+ getcharid(0) +" and online = 1 limit 128", .@char_id, .@name$ );
+	if ( .@count == 0 )
+		message strcharinfo(0), "There is none player on this map except you.";
+	else {
+		getmapxy .@map$, .@x, .@y, UNITTYPE_PC;
+		.@myname$ = strcharinfo(0);
+		while( .@i < .@count ) {
+			warpchar .@map$, .@x, .@y, .@char_id[.@i];
+			message .@name$[.@i], "You have been recalled by "+ .@myname$ +".";
+			.@i++;
+		}
+		message strcharinfo(0), .@count +" player(s) recalled.";
+	}
+	end;
+}

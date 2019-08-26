@@ -1,0 +1,51 @@
+// Sp for Guilds
+ra_temsky	mapflag	pvp	off
+
+// Maintown
+midgard3	mapflag	pvp	off
+midgard3	mapflag	nobranch
+midgard3	mapflag	noicewall
+midgard3	mapflag	town
+
+// Market
+turbo_room	mapflag	pvp	off
+
+// Gate Keeper
+force_3-1	mapflag	pvp	off
+force_3-1	mapflag	nowarpto
+force_3-1	mapflag	nowarp
+force_3-1	mapflag	noteleport
+force_3-1	mapflag	nomemo
+
+// GM Room
+jupe_ele	mapflag	pvp	off
+jupe_ele	mapflag	nowarpto
+jupe_ele	mapflag	nowarp
+jupe_ele	mapflag	noteleport
+jupe_ele	mapflag	nomemo
+
+
+// Pre-Castle
+prt_gld	mapflag	pvp	off
+prt_gld	mapflag	noicewall
+
+alde_gld	mapflag	pvp	off
+prt_gld	mapflag	noicewall
+
+pay_gld	mapflag	pvp	off
+prt_gld	mapflag	noicewall
+
+sch_gld	mapflag	pvp	off
+prt_gld	mapflag	noicewall
+
+aru_gld	mapflag	pvp	off
+prt_gld	mapflag	noicewall
+
+gef_fild13	mapflag	pvp	off
+prt_gld	mapflag	noicewall
+
+
+quiz_02	mapflag	pvp	off
+quiz_01	mapflag	pvp	off
+poring_w01	mapflag	pvp	off
+bra_dun02	mapflag	pvp	off

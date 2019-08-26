@@ -1,0 +1,53 @@
+jupe_ele,42,54,6	script	Universal Checker	56,{
+
+if ( getgmlevel() < 99 ) end;
+	mes "Enter an item id or item name. Display a list order by max amount found.";
+	input .@tmp$;
+	.@item_id = atoi( .@tmp$ );
+if ( .@item_id == 0 && getstrlen( .@tmp$ ) > 2 ) {// item name, eventually
+	.@count = searchitem( .@tmp_array, .@tmp$ );
+if ( .@count == 0 ) {// none item found
+	mes "None item found.";
+	close;
+	}
+	mes "I found the following items: ";
+	next;
+while( .@i < .@count ) {
+	.@menu$ = .@menu$ + getitemname( .@tmp_array[.@i] ) +" (ID "+ .@tmp_array[.@i] +"):";
+	.@i++;
+	}
+	.@s = select( .@menu$ ) -1;
+	.@item_id = .@tmp_array[.@s];
+	}
+else if ( .@item_id == 0 || getiteminfo( .@item_id,2 ) == -1 ) {
+	mes "Wrong item id";
+	close;
+	}
+	.@search$ = "`nameid` = "+ .@item_id +" or `card0` = "+ .@item_id +" or `card1` = "+ .@item_id +" or `card2` = "+ .@item_id +" or `card3` = "+ .@item_id;
+while(1) {
+	.@count = query_sql( "SELECT `char`.`name`, "+
+		"( SELECT COALESCE( SUM(`amount`),0 ) FROM `inventory` WHERE `char`.`char_id` = `inventory`.`char_id` and ( "+ .@search$ +" ) ) AS inv, "+
+		"( SELECT COALESCE( SUM(`amount`),0 ) FROM `cart_inventory` WHERE `char`.`char_id` = `cart_inventory`.`char_id` and ( "+ .@search$ +" ) ) AS cart, "+
+		"( SELECT COALESCE( SUM(`amount`),0 ) FROM `storage` WHERE `storage`.`account_id` = `char`.`account_id` and ( "+ .@search$ +" ) ) AS sto, "+
+		"( SELECT COALESCE( SUM(`amount`),0 ) FROM `guild_storage` WHERE `guild_storage`.`guild_id` = `char`.`guild_id` and ( "+ .@search$ +" ) ) AS gsto "+
+		"FROM `char` order by ( inv + cart + sto + gsto ) desc limit "+ ( .@page * 100 ) +", 100", .@name$, .@inventory, .@cart, .@storage, .@gstorage );
+if ( .@count == 0 ) break;
+	for ( .@i = 0; .@i < .@count && .@name$[.@i] != ""; .@i += 20 ) {
+		mes "^ff0000<player>^000000 <inv>,^00ff00<cart>,^0000ff<sto>,^006600<gsto>";
+	for ( .@j = 0; .@j < 20 && .@name$[ (.@i+.@j) ] != ""; .@j++ ) {
+		.@tmp = .@i + .@j;
+if ( ( .@inventory[.@tmp] + .@cart[.@tmp] + .@storage[.@tmp] + .@gstorage[.@tmp] ) == 0 ) {
+	next;
+	goto L_end;// XP!
+	}
+	.@num++;
+	mes .@num +"/ ^ff0000"+ .@name$[.@tmp] +"^000000 : < "+ .@inventory[.@tmp] +", ^00ff00"+ .@cart[.@tmp] +", ^0000ff"+ .@storage[.@tmp] +", ^006600"+ .@gstorage[.@tmp] +"^000000 >";
+	}
+	next;
+	}
+	.@page++;
+	}
+L_end:
+	mes "*end of the list*";
+	close;
+}

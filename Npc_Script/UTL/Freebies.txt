@@ -1,0 +1,145 @@
+midgard3,191,173,6	script	Freebies	714,{
+
+	.@freebies$ = "[ Freebies NPC ]";
+	mes .@freebies$;
+	mes "Welcome to UniversalRO!";
+	mes " ";
+	mes "Here are the initial gears to fully support your journey in facing the challenges that awaits you.";
+	next;
+	if ( #NewbieGift > 0 ) goto Recieved;	
+	mes "Please select your class specific freebies that you want to get:";
+		switch(select("Swordsman:Archer:Mage:Acolyte:Merchant:Thief")) {
+		next;
+			case 1:
+				mes .@freebies$;
+				mes "Here's your freebies for Swordsman class";
+				getitem 14592,3;
+				getitem 12208,3;
+				getitem 4142,3;
+				getitembound 40001,1,Bound_Account;
+				Zeny += 1000000;
+				getitembound 607,10,Bound_Account;
+				getitembound 504,100,Bound_Account;
+				getitembound 31051,1,Bound_Account;
+				getitembound 31052,1,Bound_Account;
+				getitembound 31053,1,Bound_Account;
+				getitembound 31054,1,Bound_Account;
+				getitembound 31055,1,Bound_Account;
+				getitembound 1108,1,Bound_Account;
+				set #NewbieGift, 1;
+				goto Message1;
+				end;
+			case 2:
+				mes .@freebies$;
+				mes "Here's your freebies for Archer class";
+				Zeny += 1000000;
+				getitem 14592,3;
+				getitem 12208,3;
+				getitem 4142,3;
+				getitembound 607,10,Bound_Account;
+				getitembound 40001,1,Bound_Account;
+				getitembound 504,100,Bound_Account;
+				getitembound 31051,1,Bound_Account;
+				getitembound 31052,1,Bound_Account;
+				getitembound 31053,1,Bound_Account;
+				getitembound 31054,1,Bound_Account;
+				getitembound 31055,1,Bound_Account;
+				getitembound 1704,1,Bound_Account;
+				set #NewbieGift, 1;
+				goto Message1;
+				end;	
+			case 3:
+				mes .@freebies$;
+				mes "Here's your freebies for Mage class";
+				Zeny += 1000000;
+				getitem 14592,3;
+				getitem 12208,3;
+				getitem 4142,3;
+				getitembound 607,10,Bound_Account;
+				getitembound 40001,1,Bound_Account;
+				getitembound 504,100,Bound_Account;
+				getitembound 31051,1,Bound_Account;
+				getitembound 31052,1,Bound_Account;
+				getitembound 31053,1,Bound_Account;
+				getitembound 31054,1,Bound_Account;
+				getitembound 31055,1,Bound_Account;
+				getitembound 1601,1,Bound_Account;
+				set #NewbieGift, 1;
+				goto Message1;
+				end;
+			case 4:
+				mes .@freebies$;
+				mes "Here's your freebies for Acolyte class";
+				Zeny += 1000000;
+				getitem 14592,3;
+				getitem 12208,3;
+				getitem 4142,3;
+				getitembound 607,10,Bound_Account;
+				getitembound 40001,1,Bound_Account;
+				getitembound 504,100,Bound_Account;
+				getitembound 31051,1,Bound_Account;
+				getitembound 31052,1,Bound_Account;
+				getitembound 31053,1,Bound_Account;
+				getitembound 31054,1,Bound_Account;
+				getitembound 31055,1,Bound_Account;
+				getitembound 1505,1,Bound_Account;
+				set #NewbieGift, 1;
+				goto Message1;
+				end;
+			case 5:
+				mes .@freebies$;
+				mes "Here's your freebies for Merchant class";
+				Zeny += 1000000;
+				getitem 14592,3;
+				getitem 12208,3;
+				getitem 4142,3;
+				getitembound 607,10,Bound_Account;
+				getitembound 40001,1,Bound_Account;
+				getitembound 504,100,Bound_Account;
+				getitembound 31051,1,Bound_Account;
+				getitembound 31052,1,Bound_Account;
+				getitembound 31053,1,Bound_Account;
+				getitembound 31054,1,Bound_Account;
+				getitembound 31055,1,Bound_Account;
+				getitembound 1301,1,Bound_Account;
+				set #NewbieGift, 1;
+				goto Message1;
+				end;
+			case 6:
+				mes .@freebies$;
+				mes "Here's your freebies for Thief class";
+				Zeny += 1000000;
+				getitem 14592,3;
+				getitem 12208,3;
+				getitem 4142,3;
+				getitembound 607,10,Bound_Account;
+				getitembound 40001,1,Bound_Account;
+				getitembound 504,100,Bound_Account;
+				getitembound 31051,1,Bound_Account;
+				getitembound 31052,1,Bound_Account;
+				getitembound 31053,1,Bound_Account;
+				getitembound 31054,1,Bound_Account;
+				getitembound 31055,1,Bound_Account;
+				getitembound 1207,1,Bound_Account;
+				set #NewbieGift, 1;
+				goto Message1;
+				end;
+				}
+	
+	Message1:
+	next;
+	mes .@freebies$;
+	mes "Start your awesome journey today.";
+	mes "If you need help. Please use @request / search for Game Staffs. Thank You.";
+	close;
+	
+	Recieved:
+	next;
+	mes .@freebies$;
+	mes "You already recieved a freebies.";
+	close;
+OnInit:
+	delwaitingroom;
+	waitingroom "Freebies Here!",0;
+	end;
+}

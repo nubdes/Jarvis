@@ -1,0 +1,37 @@
+-	script	ic	-1,{
+
+OnAtZeny:
+	if (getgroupid() < 90) end;
+	query_sql("SELECT SUM(`bank_vault`) FROM `account_data`",@bankzeny$);
+	query_sql("SELECT SUM(`zeny`) FROM `char`",@zeny$);
+
+	dispbottom "Bank Total Zeny = "+callfunc("F_InsertComma",@bankzeny$)+" Zeny.";
+	dispbottom "Player Total Zeny = "+callfunc("F_InsertComma",@zeny$)+" Zeny.";
+	end;
+
+OnWhisperGlobal:
+	if (getgroupid() < 98) end;
+	if (getitemname(atoi(@whispervar0$)) != "null") {
+	set .@item_id,atoi(@whispervar0$);
+		if (.@item_id) {
+			for(set .@i,0; .@i < .sql_size; set .@i,.@i + 1) {
+				query_sql("SELECT SUM(`amount`) FROM `"+.sql_table$[.@i]+"` WHERE `nameid`='"+.@item_id+"'",.@amount);
+				query_sql("SELECT COUNT(`card0`) FROM `"+.sql_table$[.@i]+"` WHERE `card0`='"+.@item_id+"'",.@card0);
+				query_sql("SELECT COUNT(`card1`) FROM `"+.sql_table$[.@i]+"` WHERE `card1`='"+.@item_id+"'",.@card1);
+				query_sql("SELECT COUNT(`card2`) FROM `"+.sql_table$[.@i]+"` WHERE `card2`='"+.@item_id+"'",.@card2);
+				query_sql("SELECT COUNT(`card3`) FROM `"+.sql_table$[.@i]+"` WHERE `card3`='"+.@item_id+"'",.@card3);
+				set .@total,.@total + (.@amount + .@card0 + .@card1 + .@card2 + .@card3);
+			}
+			dispbottom "Found in the database = "+.@total+" x "+getitemname(.@item_id);
+		}
+	} else {
+		dispbottom "Invalid Item ID";
+	}
+end;
+
+OnInit:
+	setarray .sql_table$[0],"inventory","cart_inventory","guild_storage","storage";
+	set .sql_size,getarraysize(.sql_table$);
+	bindatcmd "zc",strnpcinfo(3)+"::OnAtZeny";
+	end;
+}

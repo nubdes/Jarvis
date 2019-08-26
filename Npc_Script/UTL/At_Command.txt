@@ -1,0 +1,65 @@
+-	script	At_Command	-1,{
+
+OnInit:
+	bindatcmd "commands",strnpcinfo(3)+"::OnAtCmd";
+	end;
+
+OnAtCmd:
+	readbook 100,1;
+	end;
+
+}
+
+-	script	AtCommand	-1,{
+
+OnInit:
+	bindatcmd "commands2",strnpcinfo(3)+"::OnAtCmd2";
+	end;
+
+OnAtCmd2:
+	atcommand "@commands";
+	end;
+}
+
+
+-	script	CustomCommands	-1,{
+
+OnInit:
+	bindatcmd "questnpc",strnpcinfo(3)+"::OnQuest";
+	bindatcmd "hourlynpc",strnpcinfo(3)+"::OnHourly";
+	bindatcmd "arenanpc",strnpcinfo(3)+"::OnArena";
+	bindatcmd "votenpc",strnpcinfo(3)+"::OnVote";
+	bindatcmd "freebiesnpc",strnpcinfo(3)+"::OnFreebies";
+	bindatcmd "donates",strnpcinfo(3)+"::OnDonates";
+	end;
+
+OnQuest:
+	warp "prt_in",128,40;
+	dispbottom "You have been warped to the Quest Area.";
+	end;
+
+OnHourly:
+	warp "prt_in",47,106;
+	dispbottom "You have been warped to the Hourly Shop.";
+	end;
+
+OnArena:
+	warp "prt_in",47,106;
+	dispbottom "You have been warped to the Arena Shop.";
+	end;
+
+OnVote:
+	warp "prt_in",168,128;
+	dispbottom "You have been warped to the Vote Shop.";
+	end;
+
+OnFreebies:
+	warp "midgard3",193,173;
+	dispbottom "You have been warped to the Freebies NPC.";
+	end;
+OnDonates:
+	warp "prt_in",278,163;
+	dispbottom "You have been warped to the Donation NPC";
+	end;
+
+}

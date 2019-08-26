@@ -1,0 +1,81 @@
+midgard3,189,176,6	script	Player Guide	410,{
+.@n$ = "[ Server Information ]";
+mes ". . . . . . . . . . . . . . . . .";
+mes "^FF8040       Welcome ";
+mes "             to ";
+mes " Ragnarok Online";
+mes "       Universal! ^000000";
+mes ". . . . . . . . . . . . . . . . .";
+next;
+menu "NPC Guide",INFO,"Command Guide",GINFO;
+close;
+
+
+INFO:
+	mes "[ ^FF8040NPC Guide^000000 ]";
+	mes "Please select the destination you want to go.";
+	menu    "~ Advanced Quest",C1,
+		"~ Vote Shop",C2,
+		"~ Credit Agent",C3,
+		"~ Refinery Room",C4,
+		"~ Reset/Card Remover NPC",C5,
+		"~ Donation",C6,
+		"~ Stylist",C7,
+		"~ Headprotector Quest",C8,
+		"~ Hourly Shop",C9,
+		"~ Break the Seal",C10,
+		"~ King of Emperium",C11,
+		"~ Monster Arena",C12,
+		"~ Gold Room/DB Room",C13,
+		"~ Hunting Mission",C14;
+
+
+	C1:
+		dispbottom "[ Advanced Quest ] - @warp midgard3 208 237",0xFFF380;
+		end;
+	C2:
+		dispbottom "[ Vote Shop ] - @warp midgard3 215 214",0xFFF380;
+		end;
+	C3:
+		dispbottom "[ Credit Agent ] - @warp midgard3 210 173",0xFFF380;
+		end;
+	C4:
+		dispbottom "[ Refinery Room ] - @warp midgard3 215 183",0xFFF380;
+		end;
+	C5:
+		dispbottom "[ Reset/Card Remover ] - @warp midgard3 215 183",0xFFF380;
+		end;
+	C6:
+		dispbottom "[ Donation Room ] - @warp midgard3 207 166",0xFFF380;
+		end;
+	C7:
+		dispbottom "[ Headprotector Quest ] - @warp midgard3 186 184",0xFFF380;
+		end;
+	C8:
+		dispbottom "[ Stylist NPC ] - @warp midgard3 211 222",0xFFF380;
+		end;
+	C9:
+		dispbottom "[ Hourly Shop ] - @warp midgard3 186 183",0xFFF380;
+		end;
+	C10:
+		dispbottom "[ Hourly Shop ] - @warp midgard3 200 247",0xFFF380;
+		end;
+	C11:
+		dispbottom "[ King of Emperium ] - @warp midgard3 231 169",0xFFF380;
+		end;
+	C12:
+		dispbottom "[ Monster Arena ] - @warp midgard3 170 185",0xFFF380;
+		end;
+	C13:
+		dispbottom "[ Gold/DB Room ] - @warp midgard3 234 185",0xFFF380;
+		end;
+	C14:
+		dispbottom "[ Hunting Mission ] - @warp midgard3 232 205",0xFFF380;
+		end;
+
+
+GINFO:
+	mes "[ ^FF8040Command Guide^000000 ]";
+	mes "Type @commands2 for normal list of commands or @commands for a new command list.";
+	close;
+}

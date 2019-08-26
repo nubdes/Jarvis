@@ -1,0 +1,57 @@
+-	script	PlayerStatusReport	-1,{
+OnInit:
+	bindatcmd "mystats",strnpcinfo(3)+"::OnCheckStats";
+	end;
+
+
+OnCheckStats:
+OnPCLoginEvent:
+	dispbottom "- - - - - - - - - - - - - - - - - - - ",0xFAFAD2;
+	dispbottom ""+#HOURLYPOINTS+" : Hourly Points",0xFAFAD2;
+	dispbottom ""+#VOTEPOINTS+" : Vote Points",0xFAFAD2;
+	dispbottom ""+#GoldPoints+" : Gold Points",0xFAFAD2;
+	dispbottom "- - - - - - - - - - - - - - - - - - - ",0xFAFAD2;
+//	if(#pkstat == 0) {
+//		dispbottom "PK Mode: You're not in PK Mode.",0xFAFAD2;
+//		end;
+//	}else if(#pkstat == 1) {
+//		dispbottom "PK Mode: You're in PK Mode!!",0xFAFAD2;
+//		end;
+//	}
+	end;
+}
+
+-	script	Pk_Gvg_ModeSetter	-1,{
+
+OnPCLoginEvent:
+	set #pkstat,1;
+	end;
+
+OnPCLogoutEvent:
+	set #pkstat,1;
+	end;
+
+OnInit:
+	bindatcmd "pk",strnpcinfo(3)+"::OnPKCheck";
+	end;
+
+OnPKCheck:
+	if(#pkstat == 1){
+	set #pkstat,0;
+	atcommand "@pk";
+	end;
+	}
+	set #pkstat,1;
+	atcommand "@pk";
+	end;
+
+OnPCLoadMapEvent:
+	if( strcharinfo(3) == "guild_vs3" || getmapflag( strcharinfo(3),mf_gvg ) || getmapflag( strcharinfo(3),mf_gvg_castle ) ) {
+	if( #pkstat == 0 ) {
+		dispbottom "Your PK mode is currently off, Make sure to enable it before proceeding to any GvG/WoE Maps.";
+		warp "SavePoint",0,0;
+		end;
+		}
+	}
+}
+

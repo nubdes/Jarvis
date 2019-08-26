@@ -1,0 +1,206 @@
+midgard3,205,189,4	script	Kafra Employee	893,{
+
+	mes "[^FF0000Kafra Employee^000000]";
+	mes "Welcome to the Kafra Corporation!";
+	mes "How may I be of assistance today,";
+	mes	"^0000FF" + strcharinfo(0) + "^000000?";
+	mes " ";
+	mes "The Kafra Corporation will always provide convenient services";
+	menu "^00FF00>^000000 Save Position",L_Save,"^00FF00>^000000 Open Storage",L_Storage,"^00FF00>^000000 Universal Rentals",L_URental,"^00FF00>^000000 Platinum Skills",L_Platinum,"^FF0000>^000000 Nothing",L_End;
+	
+	L_Save:
+    //getmapxy(.@map$, .@x, .@y, UNITTYPE_PC);
+    savepoint "midgard3",200,179;
+	next;
+	mes "[^FF0000Kafra Employee^000000]";
+	mes "Your save point has been updated";
+	close2;
+    end;
+	
+	L_Storage:
+	close2;
+	openstorage;
+	end;
+	
+	L_URental:
+		next;
+		mes "[^FF0000Kafra Employee^000000]";
+		// Pecopeco
+		if(BaseClass == Job_Swordman && checkriding() == 0 && getskilllv("KN_RIDING") > 0 && Class == 7 || Class == 14 || Class == 4008 || Class == 4015)
+		{
+			setriding;
+			mes	"There you go, enjoy your Peco Peco!";
+			close;
+		}
+
+		// Cart
+		else if((BaseClass == Job_Merchant || BaseJob == Job_Super_Novice) && checkcart() == 0 && getskilllv("MC_PUSHCART") > 0)
+		{
+			setcart;
+			mes	"There you go, enjoy your cart!";
+			close;
+		}
+
+		// Falcon
+		else if(BaseJob != Job_Archer && BaseClass == Job_Archer && checkfalcon() == 0 && getskilllv("HT_FALCON") > 0)
+		{
+			if((Class == Job_Ranger || Class == Job_Ranger_T) && checkriding())
+			{
+				mes	"Sorry, You can't rent a falcon while having a warg with you.";
+				close;
+			} else {
+				setfalcon;
+				mes	"There you go, have fun with your falcon!";
+				close;
+			}
+		}
+
+		// Warg
+		else if(BaseClass == Job_Archer && countitem(6124) == 0 && getskilllv("RA_WUGMASTERY") > 0 && Class == Job_Ranger || Class == Job_Ranger_T)
+		{
+			if(checkfalcon())
+			{
+				mes	"Sorry, You can't rent a warg while having a falcon with you.";
+				close;
+			} else {
+				getitem 6124, 1;
+				mes	"There you go, have fun calling your Warg!";
+				close;
+			}
+		}
+		
+		// Dragon
+		else if(checkriding() == 0 && getskilllv("KN_RIDING") > 0 && getskilllv("RK_DRAGONTRAINING") > 0 && Class == 4060 || Class == 4054)
+		{
+			atcommand "@mount";
+			setriding;
+			mes	"There you go, don't let your dragon bite you!";
+			close;
+		}
+
+		// Gryphon
+		else if(checkriding() == 0 && getskilllv("KN_RIDING") > 0 && Class == 4066 || Class == 4073)
+		{
+			atcommand "@mount";
+			setriding;
+			mes	"There you go, fly away with your gryphon... if you can.";
+			mes	"*Laughing*";
+			close;
+		}
+		// Mado
+		else if(BaseJob != Job_Merchant && BaseClass == Job_Merchant && checkriding() == 0 && getskilllv("NC_MADOLICENCE") > 0 && Class == 4064 || Class == 4058)
+		{
+			atcommand "@mount";
+			setriding;
+			mes	"There you go, be proud of your Mado!";
+			close;
+		} else {
+			mes	"I apologize, ^0000FF" + strcharinfo(0) + "^000000.";
+			mes " ";
+			mes "My records indicate that you don't";
+			mes "qualify for the Universal Rental Service.";
+			close;
+		}
+	close2;
+	end;
+	
+	L_Platinum:
+	next;
+	skill "NV_FIRSTAID",1,0;
+	switch (BaseClass) {
+	case Job_Novice:
+		if (Class != Job_SuperNovice)
+			skill "NV_TRICKDEAD",1,0;
+		break;
+	case Job_Swordman:
+		skill "SM_MOVINGRECOVERY",1,0;
+		skill "SM_FATALBLOW",1,0;
+		skill "SM_AUTOBERSERK",1,0;
+		break;
+	case Job_Mage:
+		skill "MG_ENERGYCOAT",1,0;
+		break;
+	case Job_Archer:
+		skill "AC_MAKINGARROW",1,0;
+		skill "AC_CHARGEARROW",1,0;
+		break;
+	case Job_Acolyte:
+		skill "AL_HOLYLIGHT",1,0;
+		break;
+	case Job_Merchant:
+		skill "MC_CARTREVOLUTION",1,0;
+		skill "MC_CHANGECART",1,0;
+		skill "MC_LOUD",1,0;
+		break;
+	case Job_Thief:
+		skill "TF_SPRINKLESAND",1,0;
+		skill "TF_BACKSLIDING",1,0;
+		skill "TF_PICKSTONE",1,0;
+		skill "TF_THROWSTONE",1,0;
+		break;
+	default:
+		break;
+	}
+	switch (BaseJob) {
+	case Job_Knight:
+		skill "KN_CHARGEATK",1,0;
+		break;
+	case Job_Priest:
+		skill "PR_REDEMPTIO",1,0;
+		break;
+	case Job_Wizard:
+		skill "WZ_SIGHTBLASTER",1,0;
+		break;
+	case Job_Blacksmith:
+		skill "BS_UNFAIRLYTRICK",1,0;
+		skill "BS_GREED",1,0;
+		break;
+	case Job_Hunter:
+		skill "HT_PHANTASMIC",1,0;
+		break;
+	case Job_Assassin:
+		skill "AS_SONICACCEL",1,0;
+		skill "AS_VENOMKNIFE",1,0;
+		break;
+	case Job_Crusader:
+		skill "CR_SHRINK",1,0;
+		break;
+	case Job_Monk:
+		skill "MO_KITRANSLATION",1,0;
+		skill "MO_BALKYOUNG",1,0;
+		break;
+	case Job_Sage:
+		skill "SA_CREATECON",1,0;
+		skill "SA_ELEMENTWATER",1,0;
+		skill "SA_ELEMENTGROUND",1,0;
+		skill "SA_ELEMENTFIRE",1,0;
+		skill "SA_ELEMENTWIND",1,0;
+		break;
+	case Job_Rogue:
+		skill "RG_CLOSECONFINE",1,0;
+		break;
+	case Job_Alchemist:
+		skill "AM_BIOETHICS",1,0;
+		break;
+	case Job_Bard:
+		skill "BA_PANGVOICE",1,0;
+		break;
+	case Job_Dancer:
+		skill "DC_WINKCHARM",1,0;
+		break;
+	default:
+		break;
+	}
+	mes "[^FF0000Kafra Employee^000000]";
+	mes "You have gained your platinum skills.";
+	mes "Enjoy ^0000FF" + strcharinfo(0) + "^000000";
+	close2;
+	end;
+	
+	L_End:
+	next;
+	mes "[^FF0000Kafra Employee^000000]";
+	mes "Bye and good luck on your journey.";
+	close2;
+	end;
+}

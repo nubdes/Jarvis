@@ -1,0 +1,171 @@
+
+-	script	Stylist	HIDDEN_NPC,{
+
+L_Main:
+	set .@header$, "[ Stylist ]";
+	mes .@header$;
+
+	mes "Fashion is Passion!";
+	mes "Let me change your appearance~";
+	mes " ";
+	mes "[ Current Hair Style: "+getlook(LOOK_HAIR)+" ]";
+	mes "[ Current Hair Color: "+getlook(LOOK_HAIR_COLOR)+" ]";
+	mes "[ Current Cloth Color: "+getlook(LOOK_CLOTHES_COLOR)+" ]";
+	cutin "nines01",2;
+
+	setarray .look_type,LOOK_HAIR,LOOK_HAIR_COLOR,LOOK_CLOTHES_COLOR;
+
+	.@restriction = 0;
+	for (.@j = 0; .@j < getarraysize(.blacklist); .@j += 2) {
+		if (.blacklist[.@j] == Class) {
+			.@restriction = .blacklist[.@j+1];
+			break;
+		}
+	}
+
+	.@npc_menu$ = "";
+	for (.@i = 0; .@i < getarraysize(.menu_name$); .@i++) {
+		if ((.@restriction & (1 << .@i)) > 0) {
+			.@npc_menu$ = .@npc_menu$ + ":";
+		} else {
+			.@npc_menu$ = .@npc_menu$ + ( ( .npc_mode & ( 1 << .@i ) )? .menu_name$[.@i]:"" ) +":";
+		}
+	}
+
+	@style = ( select( .@npc_menu$ ) - 1 );
+	if (@style == 3) {
+	@stylist_option = select("Save","Load");
+	next;
+	mes .@header$;
+	if ((@style&@restriction) > 0) {
+		mes "You are not allowed to choose this.";
+		close;
+	}
+	mes "On which slot would you like to load or save this Style to?";
+	@style_slot=select(""+((hstyle_1 || hcolor_1 || ccolor_1)? "^0000FF"+style_number_1$+"^000000":"[ ^B2BEB5Empty^000000 ]"),
+						""+((hstyle_2 || hcolor_2 || ccolor_2)? "^0000FF"+style_number_2$+"^000000":"[ ^B2BEB5Empty^000000 ]"),
+						""+((hstyle_3 || hcolor_3 || ccolor_3)? "^0000FF"+style_number_3$+"^000000":"[ ^B2BEB5Empty^000000 ]"),
+						"Back to Options.");
+	
+	if (@style_slot == 4) {
+		next;
+		goto L_Main;
+	}
+
+	if (@stylist_option == 1)
+	input(.@name_slot$);
+
+	switch(@stylist_option) {
+		case 1:
+			setd ("style_number_"+@style_slot+"$",.@name_slot$);
+			setd ("hstyle_"+@style_slot,getlook(LOOK_HAIR));
+			setd ("hcolor_"+@style_slot,getlook(LOOK_HAIR_COLOR));
+			setd ("ccolor_"+@style_slot,getlook(LOOK_CLOTHES_COLOR));
+			next;
+			mes .@header$;
+			mes "Your Style has been saved.";
+			mes "Thank you very much!";
+			break;
+		case 2:
+			setlook(LOOK_HAIR, getd ("hstyle_"+@style_slot));
+			setlook(LOOK_HAIR_COLOR, getd ("hcolor_"+@style_slot));
+			setlook(LOOK_CLOTHES_COLOR, getd ("ccolor_"+@style_slot));
+			next;
+			mes .@header$;
+			mes "Your Style has been loaded.";
+			mes "Thank you very much!";
+			break;
+		}
+		close2;
+		cutin "",255;
+		end;
+	}
+
+	@style_value = getlook( .look_type[@style] );
+	.@style_number = .min_style[@style];
+
+	addtimer 1000,strnpcinfo(0)+"::OnPCLogoutEvent";
+	do {
+		message strcharinfo(0),.menu_name$[@style]+" : "+.@style_number+"";
+		.@removed = 0;
+		setlook .look_type[@style],.@style_number;
+
+		.@next = .@style_number + 1;
+		.@prev = .@style_number - 1;
+		if( .@next > .max_style[@style] ) .@next = .min_style[@style];
+		if( .@prev < .min_style[@style] ) .@prev = .max_style[@style];
+
+		@select = prompt( (( .@backward )?"Backward":"Forward" )+" - [ ^777777Style " +(( .@backward )? .@prev:.@next )+"^000000 ]",
+					(( !.@backward )?"Backward":"Forward" )+" - [ ^777777Style "+(( !.@backward )? .@prev:.@next )+"^000000 ]",
+					"Jump to a Style!",
+					( .@removed )?"":"^0055FFOkay! I want this "+.menu_name$[@style]+"!^000000" );
+					
+		if( @select == 2 ) .@backward = !.@backward;
+
+		switch( @select ) {
+			case 1:	
+			case 2:
+				.@style_number = (( .@backward )? .@prev:.@next );
+				break;
+			case 3:	
+				message strcharinfo(0),"Available Style : "+.min_style[@style]+" ~ "+.max_style[@style]+".";
+				input .@style_number,.min_style[@style],.max_style[@style];
+				break;
+			case 4:
+				next;
+				mes .@header$;
+				if( @style_value == .@style_number ) {
+					mes "That is your current "+.menu_name$[@style]+"!";
+					mes "Thank you!";
+					close2;
+					cutin "",255;
+				} else {
+					mes "Ah! Magnificent! You look like a million bucks, Darling!";
+					mes " ";
+					mes "Enjoy your new "+.menu_name$[@style]+"!";
+					@style_value = .@style_number;
+					close2;
+					cutin "",255;
+				}
+				end;
+
+			default:
+				setlook .look_type[@style],@style_value;
+				break;
+		}
+	} while( @select != 4 && @select != 255 );
+	mes .@header$;
+	mes "Stay young and fashionable!";
+	mes " ";
+	mes "Come again, Love!";
+	@select = 0;
+	close2;
+	deltimer strnpcinfo(0)+"::OnPCLogoutEvent";
+
+OnPCLogoutEvent:
+	if( @select )
+		setlook .look_type[@style],@style_value;
+	end;
+
+OnInit:
+	// NPC Mode ( Bitmask )
+	//	1 - Enable Hairstyle
+	//	2 - Enable Hair Color
+	//	4 - Enable Cloth Color
+	//	8 - Enable Style Loadout
+	.npc_mode = 15;
+
+	// Menu Name
+	setarray .menu_name$,
+		"Hair Style",
+		"Hair Color",
+		"Cloth Color",
+		"Style Loadout";
+
+	// Dont edit
+	setarray .min_style,getbattleflag( "min_hair_style" ),getbattleflag( "min_hair_color" ),getbattleflag( "min_cloth_color" );
+	setarray .max_style,81,getbattleflag( "max_hair_color" ),getbattleflag( "max_cloth_color" );
+	end;
+}
+
+midgard3,212,223,3	duplicate(Stylist)	Stylist#1	122

@@ -1,0 +1,117 @@
+
+
+-	script	Coin Reward	-1,{
+
+OnInit:
+	.check_idle = 1;
+	.idle_time = 5;
+	.check_vending = 1;
+	.check_chatting = 1;
+	.max_ip = 10;
+//	.restricted_map$ = "guild_vs3","guild_vs2","guild_vs1";
+
+	setarray .item[0], 
+		675, 1, // Hourly Coin 
+		677, 1; // Daily coin
+
+	bindatcmd("hourly",strnpcinfo(0)+"::OnCoinCheck",0,99);
+
+//OnHour00:
+//	$@Day_Year = gettime(DT_DAYOFYEAR);
+//	end;
+
+OnCoinCheck:
+	if (@disabled) {
+		dispbottom "It seems that there are 3 accounts with the same IP has logged in.", 0xFFFBA6;
+		dispbottom "You wont receive any more rewards in this account.", 0xFFFBA6;
+		end;
+	}
+	.@HTimer = #Daily_Timer + 3600; // 1 hour
+	//.@DTimer1 = #Daily_Timer1 + 21600; // 6 hour
+	dispbottom "Hourly Reward Timer:",0xFFFBA6;
+	dispbottom "- - - - - - - - - - - - - - - - - - - - - - - - -",0xFFFBA6;
+	dispbottom ""+ callfunc("Time2Str",.@HTimer) +" left.",0xFFFBA6;
+	//if (#Daily_Online < 6) dispbottom "Consecutive Hours: "+ callfunc("Time2Str",.@DTimer1) +" left",0xFFFBA6;
+	//				else dispbottom "Consecutive Hours: You cannot claim the consecutive hours till the day is reset.",0xFFFBA6;
+	dispbottom "- - - - - - - - - - - - - - - - - - - - - - - - -",0xFFFBA6;
+	dispbottom "You currently have - "+#HOURLYPOINTS+" Hourly Point(s).",0xFFFBA6;
+	end;
+
+OnCheck:
+	if (#Day_Check != $@Day_Year) {
+		#Day_Check = $@Day_Year;
+		#Daily_Get = #Minute_Online = #Daily_Online = 0;
+	}
+	#Minute_Online++;
+	if (checkidle() > .idle_time*60 && .check_idle) {
+		dispbottom "You cannot earn hourly or consecutive rewards while idle, Please relog to continue getting points.",0xFFFBA6;
+		end;
+	}
+	else if (checkvending() >= .check_vending) {
+		dispbottom "You cannot earn hourly or consecutive rewards while vending, Please relog to continue getting points.",0xFFFBA6;
+		end;
+	}
+	else if (checkchatting() >= .check_chatting) {
+		dispbottom "You cannot earn hourly or consecutive rewards while in a chatroom, Please relog to continue getting points.",0xFFFBA6;
+		end;
+	}
+	if (#Minute_Online == 60) {
+		//getitem .item[0], .item[1];
+		#HOURLYPOINTS += 1;
+		#Minute_Online = 0;
+		#Daily_Online++;
+		#Daily_Timer = gettimetick(2) - (#Minute_Online*60);
+		#Daily_Timer1 = gettimetick(2) - (#Minute_Online*60) - (#Daily_Online*60*60);
+		dispbottom "You received 1 Hourly Point for staying online for 60 minutes.",0xFFFBA6;
+		dispbottom "You currently have - "+#HOURLYPOINTS+" Hourly Point(s).",0xFFFBA6;
+	}
+	//if (#Daily_Online == 6 && !#Daily_Get) {
+	//	sleep2 1250;
+	//	//getitem .item[2], .item[3];
+	//	#HOURLYPOINTS += 10;
+	//	#Daily_Get = 1;
+	//	dispbottom "You received 10 Hourly Points for staying online for 6 hours today.",0xFFFBA6;
+	//	dispbottom "You currently have - "+#HOURLYPOINTS+" Hourly Point(s).",0xFFFBA6;
+	//
+	//}
+	addtimer 60000, strnpcinfo(3)+"::OnCheck";
+	end;
+
+OnPCLoginEvent:
+	sleep2 1250;
+	for (.@i = 0; .@i < getarraysize($@ip_list$); .@i++) {
+		if ($@ip_list$[.@i] == getcharip()) 
+			.@list++;
+	}
+	if (.@list >= .max_ip && .max_ip != 0) {
+		@disabled = 1;
+		dispbottom "It seems that there are "+ .max_ip +" accounts with the same IP has logged in.", 0xFFFBA6;
+		dispbottom "You wont receive any more rewards in this account.", 0xFFFBA6;
+		end;
+	}
+	$@aid_list[getarraysize($@aid_list)] = getcharid(3);
+	$@ip_list$[getarraysize($@ip_list$)] = getcharip();
+	addtimer 60000, strnpcinfo(3)+"::OnCheck";
+	#Daily_Timer = gettimetick(2) - (#Minute_Online*60);
+	#Daily_Timer1 = gettimetick(2) - (#Minute_Online*60) - (#Daily_Online*60*60);
+	end;
+
+OnPCLogoutEvent:
+	for (.@i = 0; .@i < getarraysize($@aid_list); .@i++) {
+		if ($@aid_list[.@i] == getcharid(3)) {
+			deletearray $@aid_list[.@i], 1;
+			deletearray $@ip_list$[.@i], 1;
+		}
+	}
+	end;
+}
+
+
+
+//	getmapxy(.@map$,.@x,.@y,0);
+//	if (compare("#"+.@map$+"#","#"+.restricted_map$+"#")) {
+//		dispbottom "You cannot earn hourly or consecutive rewards on this map, Please relog to continue getting coins.",0xFFFBA6;
+//		end;
+//	}
+
+

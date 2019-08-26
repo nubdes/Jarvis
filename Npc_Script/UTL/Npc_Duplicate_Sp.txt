@@ -1,0 +1,63 @@
+ra_temsky,52,127,3	duplicate(Healer)	Healer#ra	909
+ra_temsky,48,127,3	duplicate(Soul Linker)	Soul Linker#ra	51
+ra_temsky,46,127,3	duplicate(Reset Girl)	Reset Girl#ra	915
+ra_temsky,44,127,3	duplicate(Wise Old Woman#eAcustom)	Card Remover#ra	103
+ra_temsky,39,131,3	duplicate(Arena Master)	Arena Master#ra	655
+
+ra_temsky,39,144,0	script	PunchingBag#7	884,{
+	end;
+	
+OnMyMobDead:
+OnInit:
+	setmapflag("ra_temsky",mf_monster_noteleport);
+	getunitdata(getnpcid(0), .@d);
+	monster strnpcinfo(4),.@d[UNPC_X],.@d[UNPC_Y],"[DemiHuman] Dummy Bag",3101,1,strnpcinfo(0)+"::OnMyMobDead";
+	.@dupid = atoi(strnpcinfo(2));
+	.gid[.@dupid] = $@mobid[0];
+	.mhp[.@dupid] = strmobinfo(4,3101);
+	setunitdata .gid[.@dupid],UMOB_MODE,.@d[UMOB_MODE]|0x4000000|0x0200000; // Set MD_STATUS_IMMUNE (0x4000000) because EDP/burn/%MHP based status can skew the DPS counter so much.
+	initnpctimer;
+	end;
+	
+OnTimer5000:
+	.@dupid = atoi(strnpcinfo(2));
+	if(unitexists(.gid[.@dupid])){
+		getunitdata(.gid[.@dupid],.@d);
+		.@diff = (.mhp[.@dupid] - .@d[UMOB_HP]);
+		if(.@diff > 0){
+			npctalk "Dummy Bag: I've taken [ " +callfunc("F_InsertComma",.@diff/5)+ " ] DPS in last 5 seconds.";
+			setunitdata .gid[.@dupid],UMOB_HP,.mhp[.@dupid];
+			specialeffect EF_HEAL;
+		}
+	}
+	initnpctimer;
+}
+
+ra_temsky,44,144,0	script	PunchingBag#8	884,{
+	end;
+	
+OnMyMobDead:
+OnInit:
+	setmapflag("ra_temsky",mf_monster_noteleport);
+	getunitdata(getnpcid(0), .@d);
+	monster strnpcinfo(4),.@d[UNPC_X],.@d[UNPC_Y],"[Emperium] Dummy Bag",3102,1,strnpcinfo(0)+"::OnMyMobDead";
+	.@dupid = atoi(strnpcinfo(2));
+	.gid[.@dupid] = $@mobid[0];
+	.mhp[.@dupid] = strmobinfo(4,3102);
+	setunitdata .gid[.@dupid],UMOB_MODE,.@d[UMOB_MODE]|0x4000000|0x0200000; // Set MD_STATUS_IMMUNE (0x4000000) because EDP/burn/%MHP based status can skew the DPS counter so much.
+	initnpctimer;
+	end;
+	
+OnTimer5000:
+	.@dupid = atoi(strnpcinfo(2));
+	if(unitexists(.gid[.@dupid])){
+		getunitdata(.gid[.@dupid],.@d);
+		.@diff = (.mhp[.@dupid] - .@d[UMOB_HP]);
+		if(.@diff > 0){
+			npctalk "Dummy Bag: I've taken [ " +callfunc("F_InsertComma",.@diff/5)+ " ] DPS in last 5 seconds.";
+			setunitdata .gid[.@dupid],UMOB_HP,.mhp[.@dupid];
+			specialeffect EF_HEAL;
+		}
+	}
+	initnpctimer;
+}

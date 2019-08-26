@@ -1,0 +1,162 @@
+midgard3,191,168,6	script	Training Grounds	4_F_NOVICE,{
+
+	set @header$,"[ Training Ground Keeper ]";
+	mes @header$;
+	mes "Hello!";
+	mes " ";
+	mes "Do you wish to go in the Training Ground?";
+	next;
+	if (select("Yes","Cancel") == 2) close;
+	warp "06guild_r",100,180;
+	close;
+}
+
+-	script	06guild_rGround	FAKE_NPC,{
+
+OnInit:
+	bindatcmd "train",strnpcinfo(3)+"::OnTrain";
+	end;
+
+OnTrain:
+	getmapxy .@map$,.@x,.@y,UNITTYPE_PC;
+	if (	getmapflag(.@map$,mf_pvp) || getmapflag(.@map$,mf_gvg_castle) || getmapflag(.@map$,mf_nowarp) || 
+		getmapflag(.@map$,mf_gvg_castle) || getmapflag(.@map$,mf_gvg_dungeon) || 
+		getmapflag(.@map$,mf_nowarpto) || getmapflag(.@map$,mf_nowarp)) {
+		dispbottom "You cannot use this feature at this map.";
+		end;
+	}
+	warp "06guild_r",100,180;
+	end;
+}
+
+// Room Level 1
+06guild_r,100,182,3	script	Ground Keeper#1	4_F_NOVICE,{
+
+	set @header$,"[ Ground Keeper ]";
+	mes @header$;
+	mes "Hello, what do you want to do?";
+	next;
+	switch(select("Leave:Harder Monster:Heal")){
+	case 1:
+		mes @header$;
+		mes "Thank you for using the  ^880000Training Grounds^000000!";
+		warp "midgard3",193,165;
+		close;
+	case 2: 
+		mes @header$;
+		mes "Take care!";
+		warp "06guild_r",100,134;
+		close;
+	case 3:
+		mes @header$;
+		mes "Here you go!";
+		percentheal 100,100;
+		close;
+	}
+}
+
+// Room Level 2
+06guild_r,100,136,3	script	Ground Keeper#2	4_M_JOB_HUNTER,{
+
+	set @header$,"[ Ground Keeper ]";
+	mes @header$;
+	mes "Hello, what do you want to do?";
+	next;
+	switch(select("Leave:Harder Monster:Heal")){
+	case 1:
+		mes @header$;
+		mes "Thank you for using the  ^880000Training Grounds^000000!";
+		warp "midgard3",193,165;
+		close;
+	case 2: 
+		mes @header$;
+		mes "Take care!";
+		warp "06guild_r",100,86;
+		close;
+	case 3:
+		mes @header$;
+		mes "Here you go!";
+		percentheal 100,100;
+		close;
+	}
+}
+
+// Room Level 3
+06guild_r,100,88,3	script	Ground Keeper#3	4_M_JOB_ASSASSIN,{
+
+	set @header$,"[ Ground Keeper ]";
+	mes @header$;
+	mes "Hello, what do you want to do?";
+	next;
+	switch(select("Leave:Harder Monster:Heal")){
+	case 1:
+		mes @header$;
+		mes "Thank you for using the  ^880000Training Grounds^000000!";
+		warp "midgard3",193,165;
+		close;
+	case 2: 
+		mes @header$;
+		mes "Take care!";
+		warp "06guild_r",100,40;
+		close;
+	case 3:
+		mes @header$;
+		mes "Here you go!";
+		percentheal 100,100;
+		close;
+	}
+}
+
+// Room Level 4
+06guild_r,100,42,3	script	Ground Keeper#4	4_M_JOB_BLACKSMITH,{
+
+	set @header$,"[ Ground Keeper ]";
+	mes @header$;
+	mes "Hello, what do you want to do?";
+	next;
+	switch(select("Leave:Heal")){
+	case 1:
+		mes @header$;
+		mes "Thank you for using the ^880000Training Grounds^000000!";
+		warp "midgard3",193,165;
+		close;
+	case 2:
+		mes @header$;
+		mes "Here you go!";
+		percentheal 100,100;
+		close;
+	}
+}
+
+
+// Mapflags
+06guild_r	mapflag	nowarpto
+06guild_r	mapflag	nobranch
+06guild_r	mapflag	nomobloot
+06guild_r	mapflag	novending
+06guild_r	mapflag	nomemo
+06guild_r	mapflag	noteleport
+
+// Level 1-50 Monster
+06guild_r,73,163,4,4	monster	Poring	1002,30,0,0,0
+06guild_r,91,163,4,4	monster	Drops	1113,30,0,0,0
+06guild_r,109,163,4,4	monster	Poporing	1031,30,0,0,0
+06guild_r,127,163,4,4	monster	Marin	1242,30,0,0,0
+
+// Level 51-100 Monster
+06guild_r,73,117,4,4	monster	Caramel	1103,10,0,0,0
+06guild_r,91,117,4,4	monster	Wooden Golem	1153,10,0,0,0
+06guild_r,109,117,4,4	monster	Stalactic Golem	1165,10,0,0,0
+06guild_r,127,117,4,4	monster	Lava Golem	1192,10,0,0,0
+
+// Level 101-150 Monster
+06guild_r,73,69,4,4	monster	Ferus	1717,10,0,0,0
+06guild_r,91,69,4,4	monster	Ferus	1714,10,0,0,0
+06guild_r,109,69,4,4	monster	Acidus	1716,10,0,0,0
+06guild_r,127,69,4,4	monster	Acidus	1713,10,0,0,0
+
+// Level 151-200 Monster
+06guild_r,73,23,4,4	monster	Flame Skull	1869,10,0,0,0
+06guild_r,91,23,4,4	monster	Zombie Slaughter	1864,10,0,0,0
+06guild_r,109,23,4,4	monster	Banshee	1867,10,0,0,0
+06guild_r,127,23,4,4	monster	Necromancer	1870,10,0,0,0

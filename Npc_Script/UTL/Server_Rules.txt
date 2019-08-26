@@ -1,0 +1,43 @@
+midgard3,184,171,6	script	Server Rules	837,{
+
+	mes "[ Server Rules ]";
+	mes "Please be mindful of our Rules and Regulation.";
+	next;
+	mes " . . . . . . . . . . . . .";
+	mes "1. ^FF8040Do not disrespect the GM Staffs and Co-Players.^000000";
+	mes " . . . . . . . . . . . . .";
+	mes " - Bullying";
+	mes " - Profanity";
+	mes " - Discrimination";
+	mes " - Harassment";
+	mes " - Foul Language";
+	next;
+	mes " . . . . . . . . . . . . .";
+	mes "2. ^FF8040Any form of gameplay delay/grief play is punishable.^000000";
+	mes " . . . . . . . . . . . . .";
+	mes " - Flood Chat";
+	mes " - Skill Spam";
+	mes " - Portal & Npc blocks";
+	next;
+	mes " . . . . . . . . . . . . .";
+	mes "3. ^FF8040Real Money Trading is not allowed [NO WARNINGS!]^000000";
+	mes " . . . . . . . . . . . . .";
+	mes " - It is prohibited RMT at all cost.";
+	next;
+	mes " . . . . . . . . . . . . .";
+	mes "4. ^FF8040Impersonating a GM Staff/Admin is a major offense.^000000";
+	mes " . . . . . . . . . . . . .";
+	mes " - Automatic termination of all account.";
+	next;
+	mes " . . . . . . . . . . . . .";
+	mes "5. ^FF8040Any Third Party software user will be prohibited to play.^000000";
+	mes " . . . . . . . . . . . . .";
+	mes " - Macro";
+	mes " - GRF Modification.";
+	next;
+	mes "That's all for now, rules and regulations might be changed without prior notice";
+	mes "Please keep in mind that WE DO NOT tolerate any disobeying behavior and punishment will be given accordingly.";
+	mes " ";
+	mes " - ^777777uRO Staffs^000000";
+	close;
+}

@@ -1,0 +1,67 @@
+//===== Hourly Points Script =========================================
+//===== By: ==========================================================
+//= GorthexTiger modified by Nibi
+//===== Current Version: =============================================
+//= 1.4.1
+//===== Compatible With: =============================================
+//= Any eAthena Version
+//===== Description: =================================================
+//= Get Points every successful hours of gameplay, you cannot get
+//= the points even if you miss a second or a minute. A player will
+//= get a very big bonus if they played 3 hours consecutively
+//= or without logging out of the game. If the player is vending
+//= the script will then stop.
+//===== Additional Comments: =========================================
+//= You can modify the script to your liking.
+//= The default points is Kafrapoints change it anyway if you like.
+//= 1.1 = Check Chatting too
+//= 1.2 = 5 Minute Idle Check & @at/@autotrade check.
+//= 1.3 = Corrected the current balance line on 12 Hours Consecutive
+//= 1.4 = Added command to check remaining time and updated idle check. (Skorm)
+//= 1.4.1 = Modified the msgs to display according to .timer. (Skorm)
+//====================================================================
+-	script	hourlypoints	-1,{
+    
+OnPointGet:
+	//Check for idle.
+	while(checkvending() >= 1 || checkchatting() == 1 || checkidle() >= .idle) {
+		if( .@mes$ == "" ) {
+			dispbottom set( .@mes$, "The hourly points event stopped because you were vending, chatting, or idle!" );
+			set @hourly_points_timer, 0;
+		}
+		sleep2 .delay;
+	}
+	
+	@consecutive_timer++;
+	.@time_string$ = Time2Str( @consecutive_timer * ( .timer / 1000 ) );
+	dispbottom "You received "+.points+" Hourly Point(s) by staying ingame for "+.@time_string$+".";
+	#HOURLYPOINTS = #HOURLYPOINTS + .points;
+	dispbottom "Current Balance = "+#HOURLYPOINTS+" Hourly Point(s)";
+	@consecutive_bonus++;
+
+	//Check for consecutive timer.
+	if(@consecutive_bonus == .cdelay) {
+		@consecutive_bonus = 0;
+		#HOURLYPOINTS = #HOURLYPOINTS + .cpoints;
+		dispbottom "You receive a bonus "+.cpoints+" Hourly Point(s) by playing for "+.@time_string$+" consecutively!!!";
+		dispbottom "Current Balance = "+#HOURLYPOINTS+" Hourly Point(s)";
+	}
+	
+OnPCLoginEvent:
+	addtimer .timer,"hourlypoints::OnPointGet";
+	@hourly_points_timer = gettimetick(2) + ( .timer / 1000 );
+	end;
+	
+OnCmdHour:
+	message strcharinfo(0),@hourly_points_timer ? Time2Str( @hourly_points_timer )+" remaining before you get your Hourly Reward(s).":"Something went wrong or you're considered idle at the moment, try relogging!";
+	end;
+
+OnInit:
+	bindatcmd "hourly","hourlypoints::OnCmdHour"; //@ctr to view time till next point.
+	.timer   = 1000*60*60; //Timer in milliseconds. ( Default: 1000*60*60 [ = 1 Hour ] )
+	.cdelay  = 5;          //Delay before receiving the consecutive bonus. ( Default: 3 [ { ~ 3 Hours } *Using default timer ] )
+	.cpoints = 5;         //Points gained for consecutive time online. ( Default: 10 )
+	.points  = 1;          //Normal points gained. ( Default: 1 )
+	.delay   = 1000;       //Delay for idle re-check check. ( Default: 1000 [ = 1 Second ] )
+	.idle    = 60*5;       //Player is idle after not moving for this many seconds. ( Default: 60*5 [ = 5 Minutes ] )
+}

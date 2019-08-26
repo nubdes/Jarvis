@@ -1,0 +1,29 @@
+// ====== Midgard to Vote Shop ============ //
+midgard3,217,217,0	warp	tovoteshop	1,1,prt_in,168,128
+prt_in,168,125,0	warp	fvotetomid	1,1,midgard3,214,214
+// ====== Vote Shop to Midgard ============ //
+
+// ======                      ============ //
+midgard3,210,166,0	warp	to4-1	1,1,prt_in,277,164
+prt_in,274,163,0	warp	to2-1-2	1,1,midgard3,207,166
+// ======                      ============ //
+
+// ======                      ============ //
+midgard3,183,182,0	warp	to1-1	1,1,prt_in,47,106
+prt_in,51,106,0	warp	to3-1-2	1,1,midgard3,186,183
+// ======                      ============ //
+
+// ======                      ============ //
+midgard3,211,238,0	warp	to22-1	1,1,prt_in,128,40
+prt_in,128,44,0	warp	to6-1-2	1,1,midgard3,209,237
+// ======                      ============ //
+
+// ======                      ============ //
+midgard3,218,180,0	warp	xx1	2,2,prt_in,60,73
+prt_in,60,77,0	warp	xx2	2,1,midgard3,214,184
+// ======                      ============ //
+
+// ======                      ============ //
+midgard3,182,218,0	warp	xx3	2,1,prt_in,130,71
+prt_in,135,71,0	warp	xx4	1,2,midgard3,184,215
+// ======                      ============ //

@@ -1,0 +1,18 @@
+force_3-1,100,99,6	script	Gate Keeper	852,{
+	mes "[ GateKeeper ]";
+	mes " Welcome to our Server !";
+	mes " ";
+	mes " ";
+	mes " GM Team~";
+	next;
+	mes "[ GateKeeper ]";
+	mes "Would you like to start your journey?!";
+	switch(select("Yes, i'm ready!"))
+	{ 
+	case 1: warp "midgard3",189,173; end; 
+	}
+	close;
+
+}
+
+

@@ -1,0 +1,5 @@
+prt_maze03,0,0,0,0	monster	Baphomet Jr.	1101,200,0,0,0
+prt_maze03,0,0,0,0	monster	Baphomet Jr.	1101,150,0,0,0
+prt_maze03,0,0,0,0	monster	Baphomet Jr.	1101,200,0,0,0
+prt_maze03,0,0,0,0	monster	Baphomet Jr.	1101,150,0,0,0
+prt_maze03,0,0,0,0	monster	Baphomet Jr.	1101,200,0,0,0

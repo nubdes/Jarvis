@@ -1,0 +1,218 @@
+-	script	GateKeeper	HIDDEN_NPC,{
+
+	if (agitcheck() == 1) {
+			mes "[ Gate Keeper ]";
+			mes "Hold it right there!";
+			mes " ";
+			mes "I'm sorry but you're not allowed to enter PVP Arena while the War of Emperium is ongoing. Come again when the event has ended! Thanks!";
+			close;
+	}
+	if (Class == 0) {
+			mes "[ Gate Keeper ]";
+			mes "Hey there, Sugar..";
+			mes " ";
+			mes "This place ain't a playground for cute little kiddies, you know?";
+			mes "I can't allow a fragile Novice";
+			mes "in here. Run along now!";
+			close;
+	}
+	set .@gid,getcharid(0);
+	
+	switch(select(
+		"Enter PVP Arena [ " + getmapusers($@PK_Map$[$@Map_Index]) + " ]",
+		"PVP Points Item Shop",
+		"Deathmatch Mode " + ( ( PvP_Deathmatch ) ? "[^00FF00 ON ^000000]":"[^FF0000 OFF ^000000]" )
+	)) {
+		case 1:
+			if ($@PK_Map$[$@Map_Index] == "force_3-2")
+				warp $@PK_Map$[$@Map_Index],rand(.warpto_area[0],.warpto_area[2]),rand(.warpto_area[1],.warpto_area[3]);
+			else
+				warp $@PK_Map$[$@Map_Index],0,0;
+
+			announce strcharinfo(0)+" has entered PVP Arena!",bc_all,0xFFFF00;
+			detachrid;
+			end;
+
+		case 2:
+			mes "[ Gate Keeper ]";
+			mes "This is the PVP Points Item Shop!";
+			mes " ";
+			mes "It seems like you owned them all inside the PVP Arena. Well, reap what you sow. Happy Shopping!";
+			end;
+
+		case 3:
+			PvP_Deathmatch = !PvP_Deathmatch;
+			mes "[ Gate Keeper ]";
+			mes "Deathmatch status: " + ( ( PvP_Deathmatch ) ? "^00FF00enabled^000000":"^FF0000disabled^000000" ) + ".";
+			mes " ";
+			mes "If ^00FF00enabled^000000:";
+			mes "You will be automatically revived when killed inside the PVP Arena.";
+			break;
+		default:
+			break;
+	}
+	close;
+
+OnInit:
+	setarray $@PK_Map$, "force_3-2","pvp_y_1-2","guild_vs3";
+	setarray .warpto_area,158,114,189,189;
+	setarray .mapflags,
+					mf_pvp,
+					mf_nomemo,
+					mf_noteleport,
+					mf_nowarp,
+					mf_nowarpto,
+					mf_pvp_noparty,
+					mf_pvp_noguild;
+	.@sz = getarraysize($@PK_Map$);
+	.@msz = getarraysize(.mapflags);
+	for(.@i = 0; .@i < .@sz; .@i++)
+		for(.@j = 0; .@j < .@msz; .@j++)
+			setmapflag $@PK_Map$[.@i],.mapflags[.@j];
+		callsub(S_WaitingRoom);
+		initnpctimer;
+	end;
+
+// ----------------------------------------------------------
+// Uncomment this to enable map rotation every 12 midnight.
+//OnWhisperGlobal:
+//	if (getgroupid() < 90)
+//	end;
+//
+//OnClock0001:
+//	$@Map_Index = rand(getarraysize($@PK_Map$));
+//	end;
+// ----------------------------------------------------------
+
+OnTimer5000:
+	callsub(S_WaitingRoom);
+	end;
+
+S_WaitingRoom:
+		delwaitingroom;
+		waitingroom "PVP Arena [ "+getmapusers($@PK_Map$[$@Map_Index])+" ]",0;
+		initnpctimer;
+		return;
+}
+
+-	script	PvP_Function	 FAKE_NPC,{
+
+OnPCDieEvent:
+	getmapxy(@PK_Area$,@px,@py,UNITTYPE_PC,strcharinfo(0));
+	if (@PK_Area$ == $@PK_Map$[$@Map_Index]) {
+		set PVP_Points,PVP_Points-1;
+		if (PVP_Points < 0) {
+			set PVP_Points,0; 
+		}
+		if(killerrid == killedrid)
+		dispbottom "Did you just kill your self! You lose 1 PVP Point!";
+			else
+		dispbottom "What a shame! You've been killed by "+rid2name(killerrid)+"! You lose 1 PVP Point!";
+	}
+	if (PvP_Deathmatch) {
+		if (@PK_Area$ == "force_3-2") {
+			warp @PK_Area$,rand(.warpto_area[0],.warpto_area[2] ),rand(.warpto_area[1],.warpto_area[3]);
+			sleep2 250;
+			//atcommand "@alive";
+			sc_start SC_BLESSING,.duration,10;
+			sc_start SC_INCREASEAGI,.duration,10;
+		}
+		else if ((@PK_Area$ == "pvp_y_1-2") || (@PK_Area$ == "guild_vs3")) {
+			warp @PK_Area$,0,0;
+			sleep2 250;
+			//atcommand "@alive";
+			sc_start SC_BLESSING,.duration,10;
+			sc_start SC_INCREASEAGI,.duration,10;
+			end;
+		}
+	}
+	end;
+
+OnInit:
+	setarray $@PK_Map$, "force_3-2","pvp_y_1-2","guild_vs3";
+	setarray .warpto_area,158,114,189,189;
+	end;
+}
+
+force_3-2,158,177,3	script	Exit#PvP1	2_BOARD1,{	
+	dispbottom "You are leaving the PVP Arena in 10 seconds..";
+	progressbar "red",10;
+	warp "SavePoint",0,0;
+	end;
+}
+
+guild_vs3,50,87,3	duplicate(Exit#PvP1)	Exit#PvP2	2_BOARD1
+pvp_y_1-2,129,153,3	duplicate(Exit#PvP1)	Exit#PvP3	2_BOARD1
+
+-	script	PVP_Points	FAKE_NPC,{
+
+OnPCKillEvent:
+	getmapxy(@PK_Area$,@px,@py,UNITTYPE_PC,strcharinfo(0));
+	if (@PK_Area$ == $@PK_Map$[$@Map_Index]) {
+		set PVP_Points,PVP_Points+1;
+
+	if (PK_Kills$ != rid2name(killedrid))
+		set PK_RepeatKills,0;
+
+	set PK_Kills$,rid2name(killedrid);
+	set PK_RepeatKills,PK_RepeatKills+1;
+
+	if (PK_RepeatKills >= 10 && PK_Kills$ == rid2name(killedrid)) { 
+		set PVP_Points,PVP_Points-2;
+		dispbottom "Oops! You've killed the same character more than twice. You lose 1 PVP Point!";
+	}
+		else 
+		dispbottom "Sweet! You've killed "+PK_Kills$+"! You gained 1 PVP Point!";
+	}
+	end;
+}
+
+-	script	PVP_Points2	-1,{
+
+OnPCKillEvent:
+	getmapxy(@pvp2$,@px,@py,UNITTYPE_PC,strcharinfo(0));
+	if (@pvp2$ == "new_1-1") {
+		set PVP_Points,PVP_Points+1;
+
+	if (PK_Kills$ != rid2name(killedrid))
+		set PK_RepeatKills,0;
+
+	set PK_Kills$,rid2name(killedrid);
+	set PK_RepeatKills,PK_RepeatKills+1;
+
+	if (PK_RepeatKills >= 10 && PK_Kills$ == rid2name(killedrid)) { 
+		set PVP_Points,PVP_Points-2;
+		dispbottom "Owww! You've killed the same character more than twice. You lose 1 PVP Point!";
+	}
+		else
+		dispbottom "Nice! You've killed "+PK_Kills$+"! You gained 1 PVP Point!";
+	}
+	end;
+}
+
+-	script	PvP_Death	-1,{
+
+OnPCDieEvent:
+	getmapxy(@pvp2$,@px,@py,UNITTYPE_PC,strcharinfo(0));
+	if (@pvp2$ == "new_1-1") {
+		set PVP_Points,PVP_Points-2;
+	if (PVP_Points < 0) {
+		set PVP_Points,0;
+		}
+	if(killerrid == killedrid)
+		dispbottom "Did you just kill your self! You lose 1 PVP Point!";
+			else
+		dispbottom "What a shame! You've been killed by "+rid2name(killerrid)+"! You lose 2 PVP Point!";
+	}
+	end;
+}
+
+force_3-2	mapflag	nomemo
+force_3-2	mapflag	noteleport
+force_3-2	mapflag	nowarp
+force_3-2	mapflag	nowarpto
+force_3-2	mapflag	pvp_noparty
+force_3-2	mapflag	pvp_noguild
+
+
+midgard3,199,186,3	duplicate(GateKeeper)	PVPP ROOM	100

@@ -1,0 +1,2 @@
+midgard3	mapflag	nobranch
+midgard3	mapflag	noicewall

@@ -1,0 +1,35 @@
+midgard3,186,176,6	script	Server Information	117,{
+.@n$ = "[ Server Information ]";
+mes ". . . . . . . . . . . . . . . . .";
+mes "^FF8040       Welcome ";
+mes "             to ";
+mes " Ragnarok Online";
+mes "       Universal! ^000000";
+mes ". . . . . . . . . . . . . . . . .";
+next;
+menu "Server Information",INFO,"Game Information",GINFO;
+close;
+
+
+INFO:
+	mes "Here are our ^FF8040Server's^000000 information.";
+	mes "Host: ^40BFFFSingapore^000000";
+	mes "Max Client: ^40BFFF2^000000";
+	mes "Protection: ^40BFFFOVH Anti-DDoS^000000";
+	mes "Gameguard: ^40BFFFGepard 3.0^000000";
+	mes "^40BFFF8-GB Host Ram^000000";
+	mes "^40BFFFWeekly Server Backup^000000";
+	close;
+
+GINFO:
+	mes "Here are our ^FF8040Game's^000000 information.";
+	mes "Timezone:^40BFFF GMT +8 PHT^000000";
+	mes "Main Language:^40BFFF English^000000";
+	mes "Max Level:^40BFFF 255/120^000000";
+	mes "Max Stats:^40BFFF 255^000000";
+	mes "Max Atspd:^40BFFF 196^000000";
+	mes "Insta Cast:^40BFFF 150 Dex^000000";
+	mes "Max Party Member:^40BFFF 10^000000";
+	mes "Max Guild Cap:^40BFFF 30^000000";
+	close;
+}

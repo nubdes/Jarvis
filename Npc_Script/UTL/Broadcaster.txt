@@ -1,0 +1,130 @@
+//Emistry's Non Spammable Ver
+midgard3,222,212,9	script	Broadcaster NPC	831,{
+
+if( DelayTime > gettimetick(2) ){
+set .@last,DelayTime - gettimetick(2);
+set .@min,  .@last % (24*60*60) % (60*60) / (60);
+set .@sec,  .@last % (24*60*60) % (60*60) % (60);
+mes "Wait for "+.@min+" minutes "+.@sec+" seconds";
+close;
+}
+    mes "[^0055AABroadcaster^000000]";
+    mes "Hello! I can broadcast a ^008800global message^000000 for you! A global message is a message that appears at the top of the screen and is seen by all players. It cannot be ignored and therefor rules are ^888800heavily enforced^000000 in regards to this NPC.";
+    next;
+    mes "[^0055AABroadcaster^000000]";
+    mes "A little bit of harassment never hurt anybody, but doing it excessively will result in some harsh punishment. Know when to quit! Do not advertise ANY website with this NPC, even if it's not related to Ragnarok Online. Doing so will result in extensive jailtime.";
+    next;
+    mes "[^0055AABroadcaster^000000]";
+    mes "Usual rules also apply, see ^008800Rules NPC^000000 for details on those. Now, ready to broadcast? It'll cost you ^3333332,000,000z^000000 per broadcast!";
+    next;
+    menu "No thanks!",-,"Alright!",L_Broadcast;
+    mes "[^0055AABroadcaster^000000]";
+    mes "Alright, come back anytime!";
+    close;
+
+L_Broadcast:
+    mes "[^0055AABroadcaster^000000]";
+    mes "What color would you like to broadcast in?";
+    next;
+    menu "^4EEE94Sea Green^000000",L_SGREEN,"^63D1F4Surf Blue^000000",L_SBLUE,"^DA70D6Orchid^000000",L_ORCHID,"^E38217Pumpkin^000000",L_PUMPKIN,"^DB2645Red Violet^000000",L_RVOILET,"^76EE00Extreme Green^000000",L_EGREEN,"^9F79EEMedium Purple^000000",L_MPURPLE,"^EE6AA7Pretty Pink^000000",L_PPINK;
+
+    L_SGREEN:
+        if (zeny<2000000) goto L_BroadcastNoZeny;
+        mes "Alright, please insert the message you wish to broadcast:";
+        next;
+        input @brdcast$;
+        announce strcharinfo(0)+": "+@brdcast$ ,0,0x4EEE94;
+        mes "[" + strcharinfo(0) + "]";
+        set Zeny, Zeny - 2000000;
+        mes @brdcast$;
+        set DelayTime,gettimetick(2) + 60;
+        close;
+
+    L_SBLUE:
+        if (zeny<2000000) goto L_BroadcastNoZeny;
+        mes "Alright, please insert the message you wish to broadcast:";
+        next;
+        input @brdcast$;
+        announce strcharinfo(0)+": "+@brdcast$ ,0,0x63D1F4;
+        mes "[" + strcharinfo(0) + "]";
+        set Zeny, Zeny - 2000000;
+        set DelayTime,gettimetick(2) + 60;
+        mes @brdcast$;
+        close;
+    
+    L_ORCHID:
+        if (zeny<2000000) goto L_BroadcastNoZeny;
+        mes "Alright, please insert the message you wish to broadcast:";
+        next;
+        input @brdcast$;
+        announce strcharinfo(0)+": "+@brdcast$ ,0,0xDA70D6;
+        mes "[" + strcharinfo(0) + "]";
+        set Zeny, Zeny - 2000000;
+        set DelayTime,gettimetick(2) + 60;
+        mes @brdcast$;
+        close;
+
+    L_PUMPKIN:
+        if (zeny<2000000) goto L_BroadcastNoZeny;
+        mes "Alright, please insert the message you wish to broadcast:";
+        next;
+        input @brdcast$;
+        announce strcharinfo(0)+": "+@brdcast$ ,0,0xE38217;
+        mes "[" + strcharinfo(0) + "]";
+        set Zeny, Zeny - 2000000;
+        set DelayTime,gettimetick(2) + 60;
+        mes @brdcast$;
+        close;
+
+    L_RVOILET:
+        if (zeny<2000000) goto L_BroadcastNoZeny;
+        mes "Alright, please insert the message you wish to broadcast:";
+        next;
+        input @brdcast$;
+        announce strcharinfo(0)+": "+@brdcast$ ,0,0xDB2645;
+        mes "[" + strcharinfo(0) + "]";
+        set Zeny, Zeny - 2000000;
+        set DelayTime,gettimetick(2) + 60;
+        mes @brdcast$;
+        close;
+
+    L_EGREEN:
+        if (zeny<2000000) goto L_BroadcastNoZeny;
+        mes "Alright, please insert the message you wish to broadcast:";
+        next;
+        input @brdcast$;
+        announce strcharinfo(0)+": "+@brdcast$ ,0,0x76EE00;
+        mes "[" + strcharinfo(0) + "]";
+        set Zeny, Zeny - 2000000;
+        set DelayTime,gettimetick(2) + 60;
+        mes @brdcast$;
+        close;
+
+    L_MPURPLE:
+        if (zeny<2000000) goto L_BroadcastNoZeny;
+        mes "Alright, please insert the message you wish to broadcast:";
+        next;
+        input @brdcast$;
+        announce strcharinfo(0)+": "+@brdcast$ ,0,0x9F79EE;
+        mes "[" + strcharinfo(0) + "]";
+        set Zeny, Zeny - 2000000;
+        set DelayTime,gettimetick(2) + 60;
+        mes @brdcast$;
+        close;
+
+    L_PPINK:    
+        if (zeny<2000000) goto L_BroadcastNoZeny;
+        mes "Alright, please insert the message you wish to broadcast:";
+        next;
+        input @brdcast$;
+        announce strcharinfo(0)+": "+@brdcast$ ,0,0xEE6AA7;
+        mes "[" + strcharinfo(0) + "]";
+        set Zeny, Zeny - 2000000;
+        set DelayTime,gettimetick(2) + 60;
+        mes @brdcast$;
+        close;
+
+L_BroadcastNoZeny:
+    mes "Hey, wait a minute. You don't have enough zeny!";
+    close;
+}

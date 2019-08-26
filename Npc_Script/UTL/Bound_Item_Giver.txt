@@ -1,0 +1,31 @@
+-	script	bitem	-1,{
+
+OnWhisperGlobal:
+	if (getgroupid() < 98) end;
+	if(@whispervar0$ == "universal") {
+		mes "[ The Developer ]";
+		mes " ";
+		mes "^ff0000Please enter a valid ItemID^000000";
+		input .@itemid;
+		if(getitemname(.@itemid)== "" || getitemname(.@itemid)== "null" ) {
+			next;
+			mes "[ The Developer ]";
+			mes " ";
+			mes "^ff0000Are you nuts?! Come on just a valid item id that exist in our database.^000000";
+			mes "~BoOoOooooo!!!!~";
+			close;
+		}
+		next;
+		mes "[ The Developer ]";
+		mes " ";
+		mes "Please indicate how many you would like to have for ^ff0000"+getitemname(.@itemid)+"^000000";
+		input .@itemcn,0;
+		mes "[ The Developer ]";
+		mes "It is done!";
+		mes " ";
+		mes "Thanks to JP!";
+		getitembound .@itemid,.@itemcn,Bound_Account;
+		close;
+		}
+		end;
+}

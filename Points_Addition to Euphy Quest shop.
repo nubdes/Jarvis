@@ -1,0 +1,7 @@
+			// ==============================================
+			// Set points per purchase only divisble by 2
+			for(set .@i,6; .@i < getarraysize(.@q); set .@i,.@i+2)
+				set .@total,.@q[.@i+1]*.@q[1];
+				#Donate_Points += .@total / 2;
+				dispbottom "You earned "+.@total / 2+" donation points by purchasing from the donation shop, Your total balance is "+#Donate_Points+".";
+			// ===============================================

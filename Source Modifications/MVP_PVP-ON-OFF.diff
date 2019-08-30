@@ -1,0 +1,33 @@
+// Turns the pvp off when the mvp creates a tomb and turns on when respawned.
+
+// ===============================================================================
+mob.cpp
+Function: TIMER_FUNC(mob_delayspawn)
+
+After the line: 
+		md->spawn_timer = INVALID_TIMER;
+		mob_spawn(md);
+
+Add Below:
+	// Turns the pvp on when an mvp has respawned.
+	if( md->spawn->state.boss ) {
+		map_setmapflag(md->bl.m, MF_PVP, true);
+		clif_map_property_mapall(md->bl.m, MAPPROPERTY_FREEPVPZONE);
+		}
+	}
+// ===============================================================================
+
+// ===============================================================================
+mob.cpp
+Find:
+  // MvP tomb [GreenBox]
+
+After the line:
+	if (battle_config.mvp_tomb_enabled && md->spawn->state.boss && map_getmapflag(md->bl.m, MF_NOTOMB) != 1)
+		mvptomb_create(md, mvp_sd ? mvp_sd->status.name : NULL, time(NULL));
+
+Add Below:
+	// Turns pvp off after creating a tomb(The tomb creation delay must be 0 seconds.)
+		map_setmapflag(md->bl.m, MF_PVP, false);
+		clif_map_property_mapall(md->bl.m, MAPPROPERTY_NOTHING);
+// ===============================================================================
